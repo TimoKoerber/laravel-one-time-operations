@@ -1,16 +1,25 @@
-![Laravel One-Time Operations](https://user-images.githubusercontent.com/65356688/224431782-550a6147-144d-408e-a412-4bd2b425dc15.jpg)
+![Laravel One-Time Operations](https://user-images.githubusercontent.com/65356688/224445279-9526bda2-ba1f-4add-8897-92fa80dd5973.jpg)
 # Laravel One-Time Operations
 
-Run an operation once after each deployment - just like you do it with migrations!
+Run operations once after deployment - just like you do it with migrations!
+
+-----
+
+**Take your CI/CD to the next Level with Laravel One-Time Operations**! 🚀
+
+Create specific classes for a one-time usage, that can be executed automatically after each deployment. 
+Same as migrations they get processed once and then never again. Perfect for seeding or updating some data instantly after 
+some database changes or feature updates.
 
 This package is for you if...
 
-- you often create jobs to use just one single time **after a deployment**
-- you sometimes **forgot to execute** that one specific job and stuff got crazy
+- you regularly need to **update specific data** after you deployed new code
+- you often execute jobs just **only one single time** after a deployment
+- you sometimes **forget to execute** that one specific job and stuff gets crazy
 - your code gets **cluttered with jobs**, that are not being used anymore
+- your co-workers always need to be reminded to **execute that one job** after some database changes
 - you often seed or process data **in a migration file** (which is a big no-no!)
 
-And the best thing: It works as easy as **Laravel migrations**!
 
 ## Installation
 
@@ -56,7 +65,7 @@ php artisan operations:show pending processed disposed  // use multiple filters
  
 ## Tutorials
 
-### Deployment-Process
+### CI/CD & Deployment-Process
 
 The *One-Time Operations* work exactly like [Laravel Migrations](https://laravel.com/docs/9.x/migrations). 
 Just process the operations *after your code was deployed and the migrations were migrated*. 
@@ -234,7 +243,7 @@ composer test
 
 ## License
 
-Copyright © Timo Körber
+Copyright © Timo Körber | [www.timokoerber.com](https://www.timokoerber.com)
 
-Laravel JSON Seeder is open-sourced software licensed under the [MIT license](LICENSE).
+Laravel One-Time Operations is open-sourced software licensed under the [MIT license](LICENSE).
 
