@@ -1,0 +1,59 @@
+{
+    "name": "timokoerber/laravel-one-time-operations",
+    "description": "Run an operation once after each deployment - just like you do it with migrations",
+    "keywords": [
+        "laravel",
+        "deployment",
+        "migrations",
+        "operations",
+        "jobs"
+    ],
+    "authors": [
+        {
+            "name": "timo.koerber",
+            "email": "koerber.timo@gmail.com",
+            "homepage": "https://www.timokoerber.com",
+            "role": "Developer"
+        }
+    ],
+    "homepage": "https://github.com/timokoerber/laravel-one-time-operations",
+    "require": {
+        "php": "^8.0",
+        "illuminate/support": "^9.0",
+        "laravel/pint": "^1.6"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.4",
+        "orchestra/testbench": "7"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "autoload": {
+        "psr-4": {
+            "TimoKoerber\\LaravelOneTimeOperations\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "TimoKoerber\\LaravelOneTimeOperations\\Tests\\": "tests",
+            "TimoKoerber\\LaravelOneTimeOperations\\Tests\\Feature\\": "tests/Feature"
+        }
+    },
+    "scripts": {
+        "post-autoload-dump": [
+            "@php vendor/bin/testbench package:discover --ansi"
+        ],
+        "test": "./vendor/bin/phpunit",
+        "test-coverage": "./vendor/bin/phpunit --coverage-html coverage"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "TimoKoerber\\LaravelOneTimeOperations\\Providers\\OneTimeOperationsServiceProvider"
+            ]
+        }
+    }
+}
