@@ -8,9 +8,9 @@ This package is for you if...
 - you often create jobs to use just one single time **after a deployment**
 - you sometimes **forgot to execute** that one specific job and stuff got crazy
 - your code gets **cluttered with jobs**, that are not being used anymore
-- you seed or process data in a migration file (which is a big no-no!)
+- you often seed or process data **in a migration file** (which is a big no-no!)
 
-And the best thing: They work as easy as **Laravel migrations**!
+And the best thing: It works as easy as **Laravel migrations**!
 
 ## Installation
 
@@ -148,7 +148,7 @@ public function process(): void
 By default, the operation is being processed ***asyncronously*** (based on your configuration) by dispatching the job `OneTimeOperationProcessJob`. 
 
 You can also execute the code syncronously by setting the `$async` flag to `false`. 
-_(this is only recommended for small operations, since the processing of these operations will be part of the deployment process)_
+_(this is only recommended for small operations, since the processing of these operations should be part of the deployment process)_
 
 ### Processing the operations
 
@@ -170,23 +170,24 @@ After that, this operation will not be processed anymore.
 
 ### Dispatching Jobs syncronously or asyncronously 
 
-By default, all operations are being exectued with the `OneTimeOperationProcessJob` based on your `queue.default` configuration. 
-By providing the `--sync` or `--async` option, the `$async` attribute in all the files will be ignored and the operation will be executed based on the given flag. 
+For each operation a `OneTimeOperationProcessJob` is being dispatched, 
+either with `dispatch()` oder `dispatchSync()` based on the `$async` attribute in the operation file.
+
+By providing the `--sync` or `--async` option with the `operations:process` command, you can force a syncronously/asyncronously execution and ignore the attribute:
 
 ```shell
-php artisan operations:process --async  // force OneTimeOperationProcessJob::dispatch()
-php artisan operations:process --sync   // force OneTimeOperationProcessJob::dispatchSync()  
+php artisan operations:process --async  // force dispatch()
+php artisan operations:process --sync   // force dispatchSync()  
 ```
 
 **Hint!** If `operation:process` is part of your deployment process, it is **not recommended** to process the operations syncronously, 
 since an error in your operation could make your whole deployment fail. 
 
-### Re-run an operation manually
+### Re-run an operation
 
 ![Laravel One-Time Operations - Re-run an operation manually](https://user-images.githubusercontent.com/65356688/224440344-3d095730-12c3-4a2c-b4c3-42a8b6d60767.png)
 
-If something went wrong, you can process an operation manually by providing the **name of the operation** as parameter in `operations:process`. 
-This will process the operation again, even if it was processed before (confirmation is required). 
+If something went wrong (or if you just feel like it), you can process an operation again by providing the **name of the operation** as parameter in `operations:process`.
 
 ```shell
 php artisan operations:process XXXX_XX_XX_XXXXXX_awesome_operation
@@ -210,7 +211,7 @@ Filter the list with the available filters `pending`, `processed` and `disposed`
 
 - `pending` - Operations, that have not been processed yet
 - `processed` - Operations, that have been processed
-- `disposed` - Operations, that have been processed and the files were already deleted (which is okay)
+- `disposed` - Operations, that have been processed and the files were already deleted
 
 ```shell
 php artisan operations:show pending           // show only pending operations
