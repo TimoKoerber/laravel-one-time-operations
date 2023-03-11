@@ -14,20 +14,6 @@ abstract class OneTimeOperation
      */
     abstract public function process(): void;
 
-    public function setAsync(): self
-    {
-        $this->async = true;
-
-        return $this;
-    }
-
-    public function setSync(): self
-    {
-        $this->async = false;
-
-        return $this;
-    }
-
     public function isAsync(): bool
     {
         return $this->async;

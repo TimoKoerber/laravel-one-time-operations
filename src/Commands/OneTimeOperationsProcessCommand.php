@@ -127,20 +127,15 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand
             return;
         }
 
-        Operation::storeOperation($operationFile->getOperationName(), $operationFile->getClassObject()->isAsync());
+        Operation::storeOperation($operationFile->getOperationName(), $this->isAsyncMode($operationFile));
     }
 
-    protected function processOperation(OneTimeOperationFile $operationInstance)
+    protected function processOperation(OneTimeOperationFile $operationFile)
     {
-        $operation = $operationInstance->getClassObject();
-
-        $this->forceAsync && $operation->setAsync();
-        $this->forceSync && $operation->setSync();
-
-        if ($operation->isAsync()) {
-            OneTimeOperationProcessJob::dispatch($operationInstance->getOperationName());
+        if ($this->isAsyncMode($operationFile)) {
+            OneTimeOperationProcessJob::dispatch($operationFile->getOperationName());
         } else {
-            OneTimeOperationProcessJob::dispatchSync($operationInstance->getOperationName());
+            OneTimeOperationProcessJob::dispatchSync($operationFile->getOperationName());
         }
     }
 
@@ -156,7 +151,7 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand
         }
     }
 
-    protected function isAsyncMode(bool $fallback): bool
+    protected function isAsyncMode(OneTimeOperationFile $operationFile): bool
     {
         if ($this->forceAsync) {
             return true;
@@ -166,6 +161,6 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand
             return false;
         }
 
-        return $fallback;
+        return $operationFile->getClassObject()->isAsync();
     }
 }

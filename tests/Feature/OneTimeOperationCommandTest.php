@@ -27,7 +27,7 @@ class OneTimeOperationCommandTest extends OneTimeOperationCase
         // create operation file
         $this->artisan('operations:make AwesomeOperation')
             ->assertSuccessful()
-            ->expectsOutputToContain('One-time-operation [2015_10_21_072800_awesome_operation] created successfully.');
+            ->expectsOutputToContain('One-time operation [2015_10_21_072800_awesome_operation] created successfully.');
 
         // file was created, but no operation entry yet
         $this->assertFileExists($filepath);
