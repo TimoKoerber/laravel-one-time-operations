@@ -1,6 +1,6 @@
 {
     "name": "timokoerber/laravel-one-time-operations",
-    "description": "Run an operation once after each deployment - just like you do it with migrations",
+    "description": "Run operations once after deployment - just like you do it with migrations!",
     "keywords": [
         "laravel",
         "deployment",
