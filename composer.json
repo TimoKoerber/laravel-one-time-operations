@@ -8,6 +8,7 @@
         "operations",
         "jobs"
     ],
+    "license": "MIT",
     "authors": [
         {
             "name": "timo.koerber",
