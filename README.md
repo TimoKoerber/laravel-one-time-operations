@@ -88,7 +88,7 @@ By default, the following elements will be created in your project:
 If you want to use a different settings just publish and edit the config file:
 
 ```shell
-php artisan vendor:publish --provider="TimoKoerber\LaravelOneTimeOperations\OneTimeOperationsServiceProvider"
+php artisan vendor:publish --provider="TimoKoerber\LaravelOneTimeOperations\Providers\OneTimeOperationsServiceProvider"
 ```
 
 This will create the file `config/one-time-operations.php` with the following content.
