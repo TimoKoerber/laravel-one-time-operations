@@ -1,11 +1,11 @@
-![Laravel One-Time Operations](https://user-images.githubusercontent.com/65356688/224445279-9526bda2-ba1f-4add-8897-92fa80dd5973.jpg)
-# Laravel One-Time Operations
+![One-Time Operations for Laravel](https://user-images.githubusercontent.com/65356688/225704995-ec7f54fb-a5b8-4d73-898f-2ebeed9ee733.jpg)
+# One-Time Operations for Laravel
 
 Run operations once after deployment - just like you do it with migrations!
 
 -----
 
-**Take your CI/CD to the next Level with Laravel One-Time Operations**! 🚀
+**Take your CI/CD to the next Level with One-Time Operations for Laravel**! 🚀
 
 Create specific classes for a one-time usage, that can be executed automatically after each deployment. 
 Same as migrations they get processed once and then never again. Perfect for seeding or updating some data instantly after 
@@ -106,9 +106,9 @@ Make changes as you like.
 
 ### Create One-Time Operation files
 
-![Laravel One-Time Operations - Create One-Time Operation files](https://user-images.githubusercontent.com/65356688/224433928-721b1261-b7ad-40c6-a512-d0f5b5fa0cbf.png)
+![One-Time Operations for Laravel - Create One-Time Operation files](https://user-images.githubusercontent.com/65356688/224433928-721b1261-b7ad-40c6-a512-d0f5b5fa0cbf.png)
 
-![Laravel One-Time Operations - Create One-Time Operation files](https://user-images.githubusercontent.com/65356688/224433323-96b23e84-e22e-4333-8749-ae61cc866cd1.png)
+![One-Time Operations for Laravel - Create One-Time Operation files](https://user-images.githubusercontent.com/65356688/224433323-96b23e84-e22e-4333-8749-ae61cc866cd1.png)
 
 To create a new operation file execute the following command:
 
@@ -161,7 +161,7 @@ _(this is only recommended for small operations, since the processing of these o
 
 ### Processing the operations
 
-![Laravel One-Time Operations - Processing the operations](https://user-images.githubusercontent.com/65356688/224434129-43082402-6077-4043-8e97-c44786e60a59.png)
+![One-Time Operations for Laravel - Processing the operations](https://user-images.githubusercontent.com/65356688/224434129-43082402-6077-4043-8e97-c44786e60a59.png)
 
 Use the following call to process all new operation files.
 
@@ -194,7 +194,7 @@ since an error in your operation could make your whole deployment fail.
 
 ### Re-run an operation
 
-![Laravel One-Time Operations - Re-run an operation manually](https://user-images.githubusercontent.com/65356688/224440344-3d095730-12c3-4a2c-b4c3-42a8b6d60767.png)
+![One-Time Operations for Laravel - Re-run an operation manually](https://user-images.githubusercontent.com/65356688/224440344-3d095730-12c3-4a2c-b4c3-42a8b6d60767.png)
 
 If something went wrong (or if you just feel like it), you can process an operation again by providing the **name of the operation** as parameter in `operations:process`.
 
@@ -212,7 +212,7 @@ php artisan operations:process --test
 
 ### Showing all operations
 
-![Laravel One-Time Operations - Showing all operations](https://user-images.githubusercontent.com/65356688/224432952-49009531-8946-4d19-8cee-70ca12605038.png)
+![One-Time Operations for Laravel - Showing all operations](https://user-images.githubusercontent.com/65356688/224432952-49009531-8946-4d19-8cee-70ca12605038.png)
 
 So you don't have to check the database or the directory for the existing operations, 
 you can show a list with `operations:show`. 
@@ -245,5 +245,5 @@ composer test
 
 Copyright © Timo Körber | [www.timokoerber.com](https://www.timokoerber.com)
 
-Laravel One-Time Operations is open-sourced software licensed under the [MIT license](LICENSE).
+"One-Time Operations for Laravel" is open-sourced software licensed under the [MIT license](LICENSE).
 
