@@ -4,7 +4,7 @@ namespace  TimoKoerber\LaravelOneTimeOperations\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use TimoKoerber\LaravelOneTimeOperations\Models\Factories\OperationFactory;
+use TimoKoerber\LaravelOneTimeOperations\Database\Factories\OperationFactory;
 use TimoKoerber\LaravelOneTimeOperations\OneTimeOperationManager;
 
 class Operation extends Model

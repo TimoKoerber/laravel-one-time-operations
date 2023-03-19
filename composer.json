@@ -30,7 +30,8 @@
     "prefer-stable": true,
     "autoload": {
         "psr-4": {
-            "TimoKoerber\\LaravelOneTimeOperations\\": "src/"
+            "TimoKoerber\\LaravelOneTimeOperations\\": "src/",
+            "TimoKoerber\\LaravelOneTimeOperations\\Database\\Factories\\": "database/factories/"
         }
     },
     "autoload-dev": {

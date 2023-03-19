@@ -1,6 +1,6 @@
 <?php
 
-namespace TimoKoerber\LaravelOneTimeOperations\Models\Factories;
+namespace TimoKoerber\LaravelOneTimeOperations\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Arr;
