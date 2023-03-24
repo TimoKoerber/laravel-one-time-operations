@@ -10,6 +10,11 @@ abstract class OneTimeOperation
     protected bool $async = true;
 
     /**
+     * The queue that the job will be dispatched to.
+     */
+    protected string $queue = 'default';
+
+    /**
      * Process the operation.
      */
     abstract public function process(): void;
@@ -17,5 +22,10 @@ abstract class OneTimeOperation
     public function isAsync(): bool
     {
         return $this->async;
+    }
+
+    public function getQueue(): string
+    {
+        return $this->queue;
     }
 }

@@ -13,7 +13,8 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand
                             {name? : Name of specific operation}
                             {--test : Process operation without tagging it as processed, so you can call it again}
                             {--async : Ignore setting in operation and process all operations asynchronously}
-                            {--sync : Ignore setting in operation and process all operations synchronously}';
+                            {--sync : Ignore setting in operation and process all operations synchronously}
+                            {--queue= : Set the queue that all jobs will be dispatched to}';
 
     protected $description = 'Process all unprocessed one-time operations';
 
@@ -21,12 +22,15 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand
 
     protected bool $forceSync = false;
 
+    protected ?string $queue = null;
+
     public function handle(): int
     {
         $this->displayTestmodeWarning();
 
         $this->forceAsync = (bool) $this->option('async');
         $this->forceSync = (bool) $this->option('sync');
+        $this->queue = $this->option('queue');
 
         if ($this->forceAsync && $this->forceSync) {
             $this->components->error('Abort! Process either with --sync or --async.');
@@ -63,7 +67,7 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand
     protected function processOperationFile(OneTimeOperationFile $operationFile): int
     {
         $this->components->task($operationFile->getOperationName(), function () use ($operationFile) {
-            $this->processOperation($operationFile);
+            $this->dispatchOperationJob($operationFile);
             $this->storeOperation($operationFile);
         });
 
@@ -86,7 +90,7 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand
         $this->components->task($operationModel->name, function () use ($operationModel) {
             $operationFile = OneTimeOperationManager::getOperationFileByModel($operationModel);
 
-            $this->processOperation($operationFile);
+            $this->dispatchOperationJob($operationFile);
             $this->storeOperation($operationFile);
         });
 
@@ -110,7 +114,7 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand
 
         foreach ($unprocessedOperationFiles as $operationFile) {
             $this->components->task($operationFile->getOperationName(), function () use ($operationFile) {
-                $this->processOperation($operationFile);
+                $this->dispatchOperationJob($operationFile);
                 $this->storeOperation($operationFile);
             });
         }
@@ -130,13 +134,15 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand
         Operation::storeOperation($operationFile->getOperationName(), $this->isAsyncMode($operationFile));
     }
 
-    protected function processOperation(OneTimeOperationFile $operationFile)
+    protected function dispatchOperationJob(OneTimeOperationFile $operationFile)
     {
         if ($this->isAsyncMode($operationFile)) {
-            OneTimeOperationProcessJob::dispatch($operationFile->getOperationName());
-        } else {
-            OneTimeOperationProcessJob::dispatchSync($operationFile->getOperationName());
+            OneTimeOperationProcessJob::dispatch($operationFile->getOperationName())->onQueue($this->getQueue($operationFile));
+
+            return;
         }
+
+        OneTimeOperationProcessJob::dispatchSync($operationFile->getOperationName());
     }
 
     protected function testModeEnabled(): bool
@@ -162,5 +168,14 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand
         }
 
         return $operationFile->getClassObject()->isAsync();
+    }
+
+    protected function getQueue(OneTimeOperationFile $operationFile): ?string
+    {
+        if ($this->queue) {
+            return $this->queue;
+        }
+
+        return $operationFile->getClassObject()->getQueue() ?: null;
     }
 }
