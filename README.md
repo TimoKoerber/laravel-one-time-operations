@@ -49,6 +49,7 @@ php artisan operations:make <operation_name> // create operation file
 php artisan operations:process                   // process operation files
 php artisan operations:process --sync            // force syncronously execution
 php artisan operations:process --async           // force asyncronously execution
+php artisan operations:process --queue=<name>    // force queue, that the job will be dispatched to
 php artisan operations:process --test            // dont flag operations as processed
 php artisan operations:process <operation_name>  // re-run one specific operation
 ```
@@ -130,6 +131,11 @@ return new class extends OneTimeOperation
      * Determine if the operation is being processed asyncronously.
      */
     protected bool $async = true;
+    
+    /**
+     * The queue that the job will be dispatched to.
+     */
+    protected string $queue = 'default';
 
     /**
      * Process the operation.
@@ -155,9 +161,12 @@ public function process(): void
 ```
 
 By default, the operation is being processed ***asyncronously*** (based on your configuration) by dispatching the job `OneTimeOperationProcessJob`. 
+By default, the operation is being dispatched to the `default` queue of your project. Change the `$queue` as you wish.  
 
 You can also execute the code syncronously by setting the `$async` flag to `false`. 
 _(this is only recommended for small operations, since the processing of these operations should be part of the deployment process)_
+
+**Hint:** If you use syncronous processing, the `$queue` attribute will be ignored (duh!). 
 
 ### Processing the operations
 
@@ -191,6 +200,14 @@ php artisan operations:process --sync   // force dispatchSync()
 
 **Hint!** If `operation:process` is part of your deployment process, it is **not recommended** to process the operations syncronously, 
 since an error in your operation could make your whole deployment fail. 
+
+### Force different queue for all operations 
+
+You can provide the `--queue` option in the artisan call. The given queue will be used for all operations, ignoring the `$queue` attribute in the class.  
+
+```shell
+php artisan operations:process --queue=redis  // force redis queue 
+```
 
 ### Re-run an operation
 

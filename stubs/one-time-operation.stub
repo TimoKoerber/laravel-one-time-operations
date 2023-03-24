@@ -10,6 +10,11 @@ return new class extends OneTimeOperation
     protected bool $async = true;
 
     /**
+     * The queue that the job will be dispatched to.
+     */
+    protected string $queue = 'default';
+
+    /**
      * Process the operation.
      */
     public function process(): void

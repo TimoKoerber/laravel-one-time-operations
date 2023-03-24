@@ -137,7 +137,9 @@ class OneTimeOperationCommandTest extends OneTimeOperationCase
 
         // Job was executed synchronously
         Queue::assertPushed(OneTimeOperationProcessJob::class, function (OneTimeOperationProcessJob $job) {
-            return $job->operationName === '2015_10_21_072800_foo_bar_operation' && $job->connection === 'sync'; // sync
+            return $job->operationName === '2015_10_21_072800_foo_bar_operation'
+                && $job->connection === 'sync' // sync
+                && $job->queue === null; // no queue
         });
 
         $operation = Operation::first();
@@ -151,12 +153,62 @@ class OneTimeOperationCommandTest extends OneTimeOperationCase
 
         // Job was executed asynchronously
         Queue::assertPushed(OneTimeOperationProcessJob::class, function (OneTimeOperationProcessJob $job) {
-            return $job->operationName === '2015_10_21_072800_foo_bar_operation' && $job->connection === null; // async
+            return $job->operationName === '2015_10_21_072800_foo_bar_operation'
+                && $job->connection === null // async
+                && $job->queue === 'default'; // default queue
         });
 
         $operation = Operation::all()->last();
         $this->assertEquals('2015_10_21_072800_foo_bar_operation', $operation->name);
         $this->assertEquals('async', $operation->dispatched);
+
+        // process again - now on queue "foobar"
+        $this->artisan('operations:process 2015_10_21_072800_foo_bar_operation --async --queue=foobar')
+            ->expectsConfirmation('Operation was processed before. Process it again?', 'yes')
+            ->assertSuccessful();
+
+        // Job was executed asynchronously on queue "foobar"
+        Queue::assertPushed(OneTimeOperationProcessJob::class, function (OneTimeOperationProcessJob $job) {
+            return $job->operationName === '2015_10_21_072800_foo_bar_operation'
+                && $job->connection === null // async
+                && $job->queue === 'foobar'; // default queue
+        });
+    }
+
+    public function test_processing_with_queue()
+    {
+        $filepath = $this->filepath('2015_10_21_072800_foo_bar_operation.php');
+        Queue::assertNothingPushed();
+
+        // create file
+        $this->artisan('operations:make FooBarOperation')->assertSuccessful();
+
+        // edit file so it will use different queue
+        $fileContent = File::get($filepath);
+        $newContent = Str::replaceFirst('$queue = \'default\';', '$queue = \'narfpuit\';', $fileContent);
+        File::put($filepath, $newContent);
+
+        // process
+        $this->artisan('operations:process')->assertSuccessful();
+
+        // Job was executed synchronously
+        Queue::assertPushed(OneTimeOperationProcessJob::class, function (OneTimeOperationProcessJob $job) {
+            return $job->operationName === '2015_10_21_072800_foo_bar_operation'
+                && $job->connection === null // async
+                && $job->queue === 'narfpuit'; // queue narfpuit
+        });
+
+        // process again - overwrite queue with "foobar"
+        $this->artisan('operations:process 2015_10_21_072800_foo_bar_operation --queue=foobar')
+            ->expectsConfirmation('Operation was processed before. Process it again?', 'yes')
+            ->assertSuccessful();
+
+        // Job was executed asynchronously on queue "foobar"
+        Queue::assertPushed(OneTimeOperationProcessJob::class, function (OneTimeOperationProcessJob $job) {
+            return $job->operationName === '2015_10_21_072800_foo_bar_operation'
+                && $job->connection === null // async
+                && $job->queue === 'foobar'; // queue foobar
+        });
     }
 
     public function test_processing_with_test_flag()
