@@ -49,7 +49,7 @@ php artisan operations:make <operation_name> // create operation file
 php artisan operations:process                   // process operation files
 php artisan operations:process --sync            // force syncronously execution
 php artisan operations:process --async           // force asyncronously execution
-php artisan operations:process --queue=<name>    // change queue that the job will be dispatched to
+php artisan operations:process --queue=<name>    // force queue that the job will be dispatched to
 php artisan operations:process --test            // dont flag operations as processed
 php artisan operations:process <operation_name>  // re-run one specific operation
 ```
@@ -218,8 +218,6 @@ If something went wrong (or if you just feel like it), you can process an operat
 ```shell
 php artisan operations:process XXXX_XX_XX_XXXXXX_awesome_operation
 ```
-
-**Hint!** This does not restart the existing job in your queue. It dispatches another `OneTimeOperationProcessJob`!
 
 ### Testing the operation
 
