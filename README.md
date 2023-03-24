@@ -49,7 +49,7 @@ php artisan operations:make <operation_name> // create operation file
 php artisan operations:process                   // process operation files
 php artisan operations:process --sync            // force syncronously execution
 php artisan operations:process --async           // force asyncronously execution
-php artisan operations:process --queue=<name>    // force queue that the job will be dispatched to
+php artisan operations:process --queue=<name>    // force queue, that the job will be dispatched to
 php artisan operations:process --test            // dont flag operations as processed
 php artisan operations:process <operation_name>  // re-run one specific operation
 ```
@@ -166,7 +166,7 @@ By default, the operation is being dispatched to the `default` queue of your pro
 You can also execute the code syncronously by setting the `$async` flag to `false`. 
 _(this is only recommended for small operations, since the processing of these operations should be part of the deployment process)_
 
-**Hint:** If you use syncronous processing, the `$queue` attribute will be ignored. 
+**Hint:** If you use syncronous processing, the `$queue` attribute will be ignored (duh!). 
 
 ### Processing the operations
 
@@ -203,7 +203,7 @@ since an error in your operation could make your whole deployment fail.
 
 ### Force different queue for all operations 
 
-You can ignore the `$queue` attribute of all operation files by providing the `--queue` option in the artisan call:  
+You can provide the `--queue` option in the artisan call. The given queue will be used for all operations, ignoring the `$queue` attribute in the class.  
 
 ```shell
 php artisan operations:process --queue=redis  // force redis queue 
