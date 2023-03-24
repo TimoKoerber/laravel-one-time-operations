@@ -14,7 +14,7 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand
                             {--test : Process operation without tagging it as processed, so you can call it again}
                             {--async : Ignore setting in operation and process all operations asynchronously}
                             {--sync : Ignore setting in operation and process all operations synchronously}
-                            {--queue= : Set the queue that all jobs will be dispatched to}';
+                            {--queue= : Set the queue, that all jobs will be dispatched to}';
 
     protected $description = 'Process all unprocessed one-time operations';
 
