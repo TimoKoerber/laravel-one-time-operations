@@ -15,6 +15,11 @@ return new class extends OneTimeOperation
     protected string $queue = 'default';
 
     /**
+     * A tag name, that this operation can be filtered by.
+     */
+    protected ?string $tag = null;
+
+    /**
      * Process the operation.
      */
     public function process(): void
