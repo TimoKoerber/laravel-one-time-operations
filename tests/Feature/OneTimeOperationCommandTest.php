@@ -13,6 +13,30 @@ class OneTimeOperationCommandTest extends OneTimeOperationCase
 {
     use RefreshDatabase;
 
+    public function test_make_command_with_attributes()
+    {
+        $filepath = $this->filepath('2015_10_21_072800_awesome_operation.php');
+        File::delete($filepath);
+
+        // no files, database entries or jobs
+        $this->assertFileDoesNotExist($filepath);
+
+        // create operation file
+        $this->artisan('operations:make AwesomeOperation')
+            ->assertSuccessful()
+            ->expectsOutputToContain('One-time operation [2015_10_21_072800_awesome_operation] created successfully.');
+
+        // file was created, but no operation entry yet
+        $this->assertFileExists($filepath);
+
+        $fileContent = File::get($filepath);
+        // file should contain attributes and method
+        $this->assertStringContainsString('protected bool $async = true;', $fileContent);
+        $this->assertStringContainsString('protected string $queue = \'default\';', $fileContent);
+        $this->assertStringContainsString('protected ?string $tag = null;', $fileContent);
+        $this->assertStringContainsString('public function process(): void', $fileContent);
+    }
+
     /** @test */
     public function test_the_whole_command_process()
     {
@@ -121,16 +145,13 @@ class OneTimeOperationCommandTest extends OneTimeOperationCase
 
     public function test_sync_processing_with_file_attribute()
     {
-        $filepath = $this->filepath('2015_10_21_072800_foo_bar_operation.php');
         Queue::assertNothingPushed();
 
         // create file
         $this->artisan('operations:make FooBarOperation')->assertSuccessful();
 
         // edit file so it will be executed synchronously
-        $fileContent = File::get($filepath);
-        $newContent = Str::replaceFirst('$async = true;', '$async = false;', $fileContent);
-        File::put($filepath, $newContent);
+        $this->editFile('2015_10_21_072800_foo_bar_operation.php', '$async = true;', '$async = false;');
 
         // process
         $this->artisan('operations:process')->assertSuccessful();
@@ -177,16 +198,13 @@ class OneTimeOperationCommandTest extends OneTimeOperationCase
 
     public function test_processing_with_queue()
     {
-        $filepath = $this->filepath('2015_10_21_072800_foo_bar_operation.php');
         Queue::assertNothingPushed();
 
         // create file
         $this->artisan('operations:make FooBarOperation')->assertSuccessful();
 
         // edit file so it will use different queue
-        $fileContent = File::get($filepath);
-        $newContent = Str::replaceFirst('$queue = \'default\';', '$queue = \'narfpuit\';', $fileContent);
-        File::put($filepath, $newContent);
+        $this->editFile('2015_10_21_072800_foo_bar_operation.php', '$queue = \'default\';', '$queue = \'narfpuit\';');
 
         // process
         $this->artisan('operations:process')->assertSuccessful();
@@ -229,6 +247,81 @@ class OneTimeOperationCommandTest extends OneTimeOperationCase
 
         // still no database entry because of test mode
         $this->assertEquals(0, Operation::count());
+    }
+
+    public function test_processing_with_tags()
+    {
+        // create files
+        $this->artisan('operations:make FooBarOperation')->assertSuccessful();
+        $this->artisan('operations:make NarfPuitOperation')->assertSuccessful();
+        $this->artisan('operations:make NullTagOperation')->assertSuccessful();
+
+        // edit files so they will use tags
+        $this->editFile('2015_10_21_072800_foo_bar_operation.php', '$tag = null;', '$tag = \'foobar\';');
+        $this->editFile('2015_10_21_072800_narf_puit_operation.php', '$tag = null;', '$tag = \'narfpuit\';');
+
+        // error because tag is empty
+        $this->artisan('operations:process --test --tag')
+            ->expectsOutputToContain('Abort! Do not provide empty tags!')
+            ->assertFailed();
+
+        // error because tag is empty
+        $this->artisan('operations:process --test --tag=')
+            ->expectsOutputToContain('Abort! Do not provide empty tags!')
+            ->assertFailed();
+
+        // error because second tag is empty
+        $this->artisan('operations:process --test --tag=narfpuit --tag=')
+            ->expectsOutputToContain('Abort! Do not provide empty tags!')
+            ->assertFailed();
+
+        // tag does not match, so operations won't get processed
+        $this->artisan('operations:process --test --tag=awesome')
+            ->expectsOutputToContain('No operations to process.')
+            ->doesntExpectOutputToContain('2015_10_21_072800_null_tag_operation')
+            ->doesntExpectOutputToContain('2015_10_21_072800_foo_bar_operation')
+            ->doesntExpectOutputToContain('2015_10_21_072800_narf_puit_operation')
+            ->assertSuccessful();
+
+        // foobar operation will be processed because tag matches
+        $this->artisan('operations:process --test --tag=foobar')
+            ->doesntExpectOutputToContain('2015_10_21_072800_null_tag_operation')
+            ->expectsOutputToContain('2015_10_21_072800_foo_bar_operation')
+            ->doesntExpectOutputToContain('No operations to process.')
+            ->doesntExpectOutputToContain('2015_10_21_072800_narf_puit_operation')
+            ->assertSuccessful();
+
+        // narfpuit operation will be processed because tag matches
+        $this->artisan('operations:process --test --tag=narfpuit')
+            ->doesntExpectOutputToContain('2015_10_21_072800_null_tag_operation')
+            ->expectsOutputToContain('2015_10_21_072800_narf_puit_operation')
+            ->doesntExpectOutputToContain('No operations to process.')
+            ->doesntExpectOutputToContain('2015_10_21_072800_foo_bar_operation')
+            ->assertSuccessful();
+
+        // only foobar operations will be processed because awesome tag does not match
+        $this->artisan('operations:process --test --tag=awesome --tag=foobar')
+            ->doesntExpectOutputToContain('2015_10_21_072800_null_tag_operation')
+            ->doesntExpectOutputToContain('2015_10_21_072800_narf_puit_operation')
+            ->expectsOutputToContain('2015_10_21_072800_foo_bar_operation')
+            ->doesntExpectOutputToContain('No operations to process.')
+            ->assertSuccessful();
+
+        // both operations will be processed because tag match
+        $this->artisan('operations:process --test --tag=narfpuit --tag=foobar')
+            ->doesntExpectOutputToContain('2015_10_21_072800_null_tag_operation')
+            ->expectsOutputToContain('2015_10_21_072800_narf_puit_operation')
+            ->expectsOutputToContain('2015_10_21_072800_foo_bar_operation')
+            ->doesntExpectOutputToContain('No operations to process.')
+            ->assertSuccessful();
+
+        // both operation will be processed because no tag is given
+        $this->artisan('operations:process --test')
+            ->expectsOutputToContain('2015_10_21_072800_null_tag_operation')
+            ->expectsOutputToContain('2015_10_21_072800_narf_puit_operation')
+            ->expectsOutputToContain('2015_10_21_072800_foo_bar_operation')
+            ->doesntExpectOutputToContain('No operations to process.')
+            ->assertSuccessful();
     }
 
     public function test_operations_show_command()
@@ -310,5 +403,13 @@ class OneTimeOperationCommandTest extends OneTimeOperationCase
         File::deleteDirectory(base_path(config('one-time-operations.directory')));
 
         parent::tearDown();
+    }
+
+    protected function editFile(string $filename, string $search, string $replace)
+    {
+        $filepath = $this->filepath($filename);
+        $fileContent = File::get($filepath);
+        $newContent = Str::replaceFirst($search, $replace, $fileContent);
+        File::put($filepath, $newContent);
     }
 }

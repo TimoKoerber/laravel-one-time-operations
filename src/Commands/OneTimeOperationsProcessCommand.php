@@ -2,6 +2,8 @@
 
 namespace TimoKoerber\LaravelOneTimeOperations\Commands;
 
+use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 use TimoKoerber\LaravelOneTimeOperations\Jobs\OneTimeOperationProcessJob;
 use TimoKoerber\LaravelOneTimeOperations\Models\Operation;
 use TimoKoerber\LaravelOneTimeOperations\OneTimeOperationFile;
@@ -14,7 +16,8 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand
                             {--test : Process operation without tagging it as processed, so you can call it again}
                             {--async : Ignore setting in operation and process all operations asynchronously}
                             {--sync : Ignore setting in operation and process all operations synchronously}
-                            {--queue= : Set the queue, that all jobs will be dispatched to}';
+                            {--queue= : Set the queue, that all jobs will be dispatched to}
+                            {--tag=* : Process only operations, that have one of the given tag}';
 
     protected $description = 'Process all unprocessed one-time operations';
 
@@ -24,6 +27,8 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand
 
     protected ?string $queue = null;
 
+    protected array $tags = [];
+
     public function handle(): int
     {
         $this->displayTestmodeWarning();
@@ -31,8 +36,15 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand
         $this->forceAsync = (bool) $this->option('async');
         $this->forceSync = (bool) $this->option('sync');
         $this->queue = $this->option('queue');
+        $this->tags = $this->option('tag');
 
-        if ($this->forceAsync && $this->forceSync) {
+        if (! $this->tagOptionsAreValid()) {
+            $this->components->error('Abort! Do not provide empty tags!');
+
+            return self::FAILURE;
+        }
+
+        if (! $this->syncOptionsAreValid()) {
             $this->components->error('Abort! Process either with --sync or --async.');
 
             return self::FAILURE;
@@ -102,7 +114,13 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand
 
     protected function processNextOperations(): int
     {
+        $processingOutput = 'Processing operations.';
         $unprocessedOperationFiles = OneTimeOperationManager::getUnprocessedOperationFiles();
+
+        if ($this->tags) {
+            $processingOutput = sprintf('Processing operations with tags (%s)', Arr::join($this->tags, ','));
+            $unprocessedOperationFiles = $this->filterOperationsByTags($unprocessedOperationFiles);
+        }
 
         if ($unprocessedOperationFiles->isEmpty()) {
             $this->components->info('No operations to process.');
@@ -110,7 +128,7 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand
             return self::SUCCESS;
         }
 
-        $this->components->info('Processing operations.');
+        $this->components->info($processingOutput);
 
         foreach ($unprocessedOperationFiles as $operationFile) {
             $this->components->task($operationFile->getOperationName(), function () use ($operationFile) {
@@ -123,6 +141,11 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand
         $this->components->info('Processing finished.');
 
         return self::SUCCESS;
+    }
+
+    protected function tagMatched(OneTimeOperationFile $operationFile): bool
+    {
+        return in_array($operationFile->getClassObject()->getTag(), $this->tags);
     }
 
     protected function storeOperation(OneTimeOperationFile $operationFile): void
@@ -177,5 +200,33 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand
         }
 
         return $operationFile->getClassObject()->getQueue() ?: null;
+    }
+
+    protected function filterOperationsByTags(Collection $unprocessedOperationFiles): Collection
+    {
+        return $unprocessedOperationFiles->filter(function (OneTimeOperationFile $operationFile) {
+            return $this->tagMatched($operationFile);
+        })->collect();
+    }
+
+    protected function tagOptionsAreValid(): bool
+    {
+        // not tags provided
+        if (empty($this->tags)) {
+            return true;
+        }
+
+        // all tags valid strings (not empty)
+        if (count($this->tags) === count(array_filter($this->tags))) {
+            return true;
+        }
+
+        return false;
+    }
+
+    protected function syncOptionsAreValid(): bool
+    {
+        // to not use both options at the same time
+        return ! ($this->forceAsync && $this->forceSync);
     }
 }

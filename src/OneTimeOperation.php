@@ -15,6 +15,11 @@ abstract class OneTimeOperation
     protected string $queue = 'default';
 
     /**
+     * A tag name, that this operation can be filtered by.
+     */
+    protected ?string $tag = null;
+
+    /**
      * Process the operation.
      */
     abstract public function process(): void;
@@ -27,5 +32,10 @@ abstract class OneTimeOperation
     public function getQueue(): string
     {
         return $this->queue;
+    }
+
+    public function getTag(): ?string
+    {
+        return $this->tag;
     }
 }

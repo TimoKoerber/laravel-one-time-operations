@@ -46,11 +46,15 @@ php artisan operations:make <operation_name> // create operation file
 
 ### Process operations
 ```shell
-php artisan operations:process                   // process operation files
+php artisan operations:process                   // process all new operation files
+
 php artisan operations:process --sync            // force syncronously execution
 php artisan operations:process --async           // force asyncronously execution
-php artisan operations:process --queue=<name>    // force queue, that the job will be dispatched to
 php artisan operations:process --test            // dont flag operations as processed
+
+php artisan operations:process --queue=<name>    // force queue, that the job will be dispatched to
+php artisan operations:process --tag=<tagname>   // only process operations, that have the given tag
+
 php artisan operations:process <operation_name>  // re-run one specific operation
 ```
 
@@ -136,6 +140,11 @@ return new class extends OneTimeOperation
      * The queue that the job will be dispatched to.
      */
     protected string $queue = 'default';
+    
+    /**
+     * A tag name, that this operation can be filtered by.
+     */
+    protected ?string $tag = null;
 
     /**
      * Process the operation.
@@ -208,6 +217,40 @@ You can provide the `--queue` option in the artisan call. The given queue will b
 ```shell
 php artisan operations:process --queue=redis  // force redis queue 
 ```
+
+### Run only operations with a given tag
+
+You can provide the `$tag` attribute in your operation file: 
+
+```php
+<?php
+// operations/XXXX_XX_XX_XXXXXX_awesome_operation.php
+
+    protected ?string $tag = "awesome";
+};
+```
+
+That way you can filter operations with this specific tag when processing the operations:
+
+```shell
+php artisan operations:process --tag=awesome  // run only operations with "awesome" tag
+```
+
+This is quite usefull if, for example, you want to process some of your operations before and some after the migrations: 
+
+```text
+ - php artisan operations:process --tag=before-migrations 
+ - php artisan migrate
+ - php artisan operations:process
+```
+
+You can also provide multiple tags:
+
+```shell
+php artisan operations:process --tag=awesome --tag=foobar // run only operations with "awesome" or "foobar" tag 
+```
+
+*Hint!* `operations:process` (without tags) still processes *all* operations, even if they have a tag.
 
 ### Re-run an operation
 

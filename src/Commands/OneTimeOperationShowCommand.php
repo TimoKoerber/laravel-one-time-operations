@@ -2,8 +2,11 @@
 
 namespace TimoKoerber\LaravelOneTimeOperations\Commands;
 
+use Illuminate\Support\Collection;
 use Throwable;
+use TimoKoerber\LaravelOneTimeOperations\Commands\Utils\OperationsLineElement;
 use TimoKoerber\LaravelOneTimeOperations\Models\Operation;
+use TimoKoerber\LaravelOneTimeOperations\OneTimeOperationFile;
 use TimoKoerber\LaravelOneTimeOperations\OneTimeOperationManager;
 
 class OneTimeOperationShowCommand extends OneTimeOperationsCommand
@@ -22,29 +25,18 @@ class OneTimeOperationShowCommand extends OneTimeOperationsCommand
     {
         try {
             $this->validateFilters();
-
-            $operationModels = Operation::all();
-            $operationFiles = OneTimeOperationManager::getAllOperationFiles();
             $this->newLine();
 
-            foreach ($operationModels as $operation) {
-                if (OneTimeOperationManager::fileExistsByName($operation->name)) {
-                    continue;
-                }
+            $operationOutputLines = $this->getOperationLinesForOutput();
+            $operationOutputLines = $this->filterOperationLinesByStatus($operationOutputLines);
 
-                $this->shouldDisplay(self::LABEL_DISPOSED) && $this->components->twoColumnDetail($operation->name, $this->gray($operation->processed_at).' '.$this->green(self::LABEL_DISPOSED));
-            }
-
-            foreach ($operationFiles->toArray() as $file) {
-                if ($model = $file->getModel()) {
-                    $this->shouldDisplay(self::LABEL_PROCESSED) && $this->components->twoColumnDetail($model->name, $this->gray($model->processed_at).' '.$this->brightgreen(self::LABEL_PROCESSED));
-                } else {
-                    $this->shouldDisplay(self::LABEL_PENDING) && $this->components->twoColumnDetail($file->getOperationName(), $this->white(self::LABEL_PENDING));
-                }
-            }
-
-            if ($operationModels->isEmpty() && $operationFiles->isEmpty()) {
+            if ($operationOutputLines->isEmpty()) {
                 $this->components->info('No operations found.');
+            }
+
+            /** @var OperationsLineElement $lineElement */
+            foreach ($operationOutputLines as $lineElement) {
+                $lineElement->output($this->components);
             }
 
             $this->newLine();
@@ -68,7 +60,7 @@ class OneTimeOperationShowCommand extends OneTimeOperationsCommand
         throw_if(array_diff($filters, $validFilters), \Exception::class, 'Given filter is not valid. Allowed filters: '.implode('|', array_map('strtolower', $this->validFilters)));
     }
 
-    protected function shouldDisplay(string $filterName): bool
+    protected function shouldDisplayByStatus(string $filterName): bool
     {
         $givenFilters = $this->argument('filter');
 
@@ -79,5 +71,41 @@ class OneTimeOperationShowCommand extends OneTimeOperationsCommand
         $givenFilters = array_map(fn ($filter) => strtolower($filter), $givenFilters);
 
         return in_array(strtolower($filterName), $givenFilters);
+    }
+
+    protected function getOperationLinesForOutput(): Collection
+    {
+        $operationModels = Operation::all();
+        $operationFiles = OneTimeOperationManager::getAllOperationFiles();
+
+        $operationOutputLines = collect();
+
+        // add disposed operations
+        foreach ($operationModels as $operation) {
+            if (OneTimeOperationManager::fileExistsByName($operation->name)) {
+                continue;
+            }
+
+            $operationOutputLines->add(OperationsLineElement::make($operation->name, self::LABEL_DISPOSED, $operation->processed_at));
+        }
+
+        // add processed and pending operations
+        foreach ($operationFiles->toArray() as $file) {
+            /** @var OneTimeOperationFile $file */
+            if ($model = $file->getModel()) {
+                $operationOutputLines->add(OperationsLineElement::make($model->name, self::LABEL_PROCESSED, $model->processed_at, $file->getClassObject()->getTag()));
+            } else {
+                $operationOutputLines->add(OperationsLineElement::make($file->getOperationName(), self::LABEL_PENDING, null, $file->getClassObject()->getTag()));
+            }
+        }
+
+        return $operationOutputLines;
+    }
+
+    protected function filterOperationLinesByStatus(Collection $operationOutputLines): Collection
+    {
+        return $operationOutputLines->filter(function (OperationsLineElement $lineElement) {
+            return $this->shouldDisplayByStatus($lineElement->getStatus());
+        })->collect();
     }
 }
