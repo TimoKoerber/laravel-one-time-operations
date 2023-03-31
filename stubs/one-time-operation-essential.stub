@@ -1,0 +1,11 @@
+<?php
+
+use TimoKoerber\LaravelOneTimeOperations\OneTimeOperation;
+
+return new class extends OneTimeOperation
+{
+    public function process(): void
+    {
+        //
+    }
+};

@@ -18,9 +18,6 @@ class OneTimeOperationCommandTest extends OneTimeOperationCase
         $filepath = $this->filepath('2015_10_21_072800_awesome_operation.php');
         File::delete($filepath);
 
-        // no files, database entries or jobs
-        $this->assertFileDoesNotExist($filepath);
-
         // create operation file
         $this->artisan('operations:make AwesomeOperation')
             ->assertSuccessful()
@@ -35,6 +32,44 @@ class OneTimeOperationCommandTest extends OneTimeOperationCase
         $this->assertStringContainsString('protected string $queue = \'default\';', $fileContent);
         $this->assertStringContainsString('protected ?string $tag = null;', $fileContent);
         $this->assertStringContainsString('public function process(): void', $fileContent);
+    }
+
+    public function test_make_command_without_attributes()
+    {
+        $filepath = $this->filepath('2015_10_21_072800_awesome_operation.php');
+        File::delete($filepath);
+
+        // create operation file with essential flag
+        $this->artisan('operations:make AwesomeOperation --essential')->assertSuccessful();
+
+        $fileContent = File::get($filepath);
+
+        // file should contain method
+        $this->assertStringContainsString('public function process(): void', $fileContent);
+
+        // file should not contain attributes
+        $this->assertStringNotContainsString('protected bool $async = true;', $fileContent);
+        $this->assertStringNotContainsString('protected string $queue = \'default\';', $fileContent);
+        $this->assertStringNotContainsString('protected ?string $tag = null;', $fileContent);
+    }
+
+    public function test_make_command_without_attributes_shortcut()
+    {
+        $filepath = $this->filepath('2015_10_21_072800_awesome_operation.php');
+        File::delete($filepath);
+
+        // create operation file with shortcut for essential flag
+        $this->artisan('operations:make AwesomeOperation -e')->assertSuccessful();
+
+        $fileContent = File::get($filepath);
+
+        // file should contain method
+        $this->assertStringContainsString('public function process(): void', $fileContent);
+
+        // file should not contain attributes
+        $this->assertStringNotContainsString('protected bool $async = true;', $fileContent);
+        $this->assertStringNotContainsString('protected string $queue = \'default\';', $fileContent);
+        $this->assertStringNotContainsString('protected ?string $tag = null;', $fileContent);
     }
 
     /** @test */

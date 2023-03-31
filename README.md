@@ -41,7 +41,8 @@ Now you're all set!
 
 ### Create operation files
 ```shell
-php artisan operations:make <operation_name> // create operation file
+php artisan operations:make <operation_name>                // create new operation file
+php artisan operations:make <operation_name> -e|--essential // create file without any attributes
 ```
 
 ### Process operations
@@ -159,7 +160,6 @@ return new class extends OneTimeOperation
 
 Provide your code in the `process()` method, for example: 
 
-
 ```php
 // operations/XXXX_XX_XX_XXXXXX_awesome_operation.php
 
@@ -176,6 +176,15 @@ You can also execute the code syncronously by setting the `$async` flag to `fals
 _(this is only recommended for small operations, since the processing of these operations should be part of the deployment process)_
 
 **Hint:** If you use syncronous processing, the `$queue` attribute will be ignored (duh!). 
+
+### Create a cleaner operation file
+
+If you don't need all the available attributes for your operation, you can create a *cleaner* operation file with the `--essential` or `-e` option: 
+
+```shell
+php artisan operations:make AwesomeOperation --essential
+php artisan operations:make AwesomeOperation -e
+```
 
 ### Processing the operations
 

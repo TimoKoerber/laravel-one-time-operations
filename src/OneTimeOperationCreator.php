@@ -15,6 +15,8 @@ class OneTimeOperationCreator
 
     protected string $operationName = '';
 
+    protected bool $essential = false;
+
     public function __construct()
     {
         $this->operationsDirectory = OneTimeOperationManager::getDirectoryPath();
@@ -23,10 +25,11 @@ class OneTimeOperationCreator
     /**
      * @throws \Throwable
      */
-    public static function createOperationFile(string $name): OneTimeOperationFile
+    public static function createOperationFile(string $name, bool $essential = false): OneTimeOperationFile
     {
         $instance = new self();
         $instance->setProvidedName($name);
+        $instance->setEssential($essential);
 
         return OneTimeOperationFile::make($instance->createFile());
     }
@@ -54,6 +57,10 @@ class OneTimeOperationCreator
 
     protected function getStubFilepath(): string
     {
+        if ($this->essential) {
+            return File::get(__DIR__.'/../stubs/one-time-operation-essential.stub');
+        }
+
         return File::get(__DIR__.'/../stubs/one-time-operation.stub');
     }
 
@@ -84,5 +91,10 @@ class OneTimeOperationCreator
     public function setProvidedName(string $providedName): void
     {
         $this->providedName = $providedName;
+    }
+
+    public function setEssential(bool $essential): void
+    {
+        $this->essential = $essential;
     }
 }
