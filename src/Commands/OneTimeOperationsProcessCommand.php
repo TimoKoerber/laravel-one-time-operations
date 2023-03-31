@@ -211,12 +211,12 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand
 
     protected function tagOptionsAreValid(): bool
     {
-        // not tags provided
+        // no tags provided
         if (empty($this->tags)) {
             return true;
         }
 
-        // all tags valid strings (not empty)
+        // all tags are not empty
         if (count($this->tags) === count(array_filter($this->tags))) {
             return true;
         }
@@ -226,7 +226,7 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand
 
     protected function syncOptionsAreValid(): bool
     {
-        // to not use both options at the same time
+        // do not use both options at the same time
         return ! ($this->forceAsync && $this->forceSync);
     }
 }

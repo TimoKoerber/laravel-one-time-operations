@@ -77,7 +77,6 @@ class OneTimeOperationShowCommand extends OneTimeOperationsCommand
     {
         $operationModels = Operation::all();
         $operationFiles = OneTimeOperationManager::getAllOperationFiles();
-
         $operationOutputLines = collect();
 
         // add disposed operations
