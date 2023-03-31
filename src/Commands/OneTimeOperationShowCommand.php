@@ -60,7 +60,7 @@ class OneTimeOperationShowCommand extends OneTimeOperationsCommand
         throw_if(array_diff($filters, $validFilters), \Exception::class, 'Given filter is not valid. Allowed filters: '.implode('|', array_map('strtolower', $this->validFilters)));
     }
 
-    protected function shouldDisplayByStatus(string $filterName): bool
+    protected function shouldDisplayByFilter(string $filterName): bool
     {
         $givenFilters = $this->argument('filter');
 
@@ -104,7 +104,7 @@ class OneTimeOperationShowCommand extends OneTimeOperationsCommand
     protected function filterOperationLinesByStatus(Collection $operationOutputLines): Collection
     {
         return $operationOutputLines->filter(function (OperationsLineElement $lineElement) {
-            return $this->shouldDisplayByStatus($lineElement->getStatus());
+            return $this->shouldDisplayByFilter($lineElement->getStatus());
         })->collect();
     }
 }
