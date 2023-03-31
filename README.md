@@ -42,7 +42,7 @@ Now you're all set!
 ### Create operation files
 ```shell
 php artisan operations:make <operation_name>                // create new operation file
-php artisan operations:make <operation_name> -e|--essential // create "cleaner" file without any attributes
+php artisan operations:make <operation_name> -e|--essential // create cleaner file without any attributes
 ```
 
 ### Process operations
