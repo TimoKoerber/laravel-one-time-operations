@@ -54,7 +54,6 @@ php artisan operations:process --async           // force asyncronously executio
 php artisan operations:process --test            // dont flag operations as processed
 php artisan operations:process --isolated        // Do not run the command if another instance of the command is already running
 
-
 php artisan operations:process --queue=<name>    // force queue, that the job will be dispatched to
 php artisan operations:process --tag=<tagname>   // only process operations, that have the given tag
 
