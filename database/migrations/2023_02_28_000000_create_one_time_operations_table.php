@@ -6,18 +6,10 @@ use Illuminate\Support\Facades\Schema;
 use TimoKoerber\LaravelOneTimeOperations\Models\Operation;
 use TimoKoerber\LaravelOneTimeOperations\OneTimeOperationManager;
 
-class CreateOneTimeOperationsTable extends Migration
-{
-    protected string $name;
-
-    public function __construct()
-    {
-        $this->name = OneTimeOperationManager::getTableName();
-    }
-
+return new class () extends Migration {
     public function up()
     {
-        Schema::create($this->name, function (Blueprint $table) {
+        Schema::create(OneTimeOperationManager::getTableName(), function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
             $table->enum('dispatched', [Operation::DISPATCHED_SYNC, Operation::DISPATCHED_ASYNC]);
@@ -27,6 +19,6 @@ class CreateOneTimeOperationsTable extends Migration
 
     public function down()
     {
-        Schema::dropIfExists($this->name);
+        Schema::dropIfExists(OneTimeOperationManager::getTableName());
     }
 }
