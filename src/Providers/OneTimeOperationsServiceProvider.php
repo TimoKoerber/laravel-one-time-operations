@@ -20,7 +20,7 @@ class OneTimeOperationsServiceProvider extends ServiceProvider
 
             $this->publishes([
                  __DIR__.'/../../config/one-time-operations.php' => config_path('one-time-operations.php'),
-             ]);
+             ], 'one-time-operations-config');
         }
     }
 
