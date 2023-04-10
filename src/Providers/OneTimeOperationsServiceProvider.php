@@ -13,14 +13,14 @@ class OneTimeOperationsServiceProvider extends ServiceProvider
     {
         $this->loadMigrationsFrom([__DIR__.'/../../database/migrations']);
 
-        $this->publishes([
-            __DIR__.'/../../config/one-time-operations.php' => config_path('one-time-operations.php'),
-        ]);
-
         if ($this->app->runningInConsole()) {
             $this->commands(OneTimeOperationsMakeCommand::class);
             $this->commands(OneTimeOperationsProcessCommand::class);
             $this->commands(OneTimeOperationShowCommand::class);
+
+            $this->publishes([
+                 __DIR__.'/../../config/one-time-operations.php' => config_path('one-time-operations.php'),
+             ]);
         }
     }
 
