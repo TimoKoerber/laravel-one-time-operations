@@ -2,6 +2,7 @@
 
 namespace TimoKoerber\LaravelOneTimeOperations\Commands;
 
+use Illuminate\Contracts\Console\Isolatable;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use TimoKoerber\LaravelOneTimeOperations\Jobs\OneTimeOperationProcessJob;
@@ -9,7 +10,7 @@ use TimoKoerber\LaravelOneTimeOperations\Models\Operation;
 use TimoKoerber\LaravelOneTimeOperations\OneTimeOperationFile;
 use TimoKoerber\LaravelOneTimeOperations\OneTimeOperationManager;
 
-class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand
+class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand implements Isolatable
 {
     protected $signature = 'operations:process
                             {name? : Name of specific operation}

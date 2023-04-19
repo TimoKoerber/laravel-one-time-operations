@@ -52,6 +52,7 @@ php artisan operations:process                   // process all new operation fi
 php artisan operations:process --sync            // force syncronously execution
 php artisan operations:process --async           // force asyncronously execution
 php artisan operations:process --test            // dont flag operations as processed
+php artisan operations:process --isolated        // run command isolated
 
 php artisan operations:process --queue=<name>    // force queue, that the job will be dispatched to
 php artisan operations:process --tag=<tagname>   // only process operations, that have the given tag
@@ -225,6 +226,14 @@ You can provide the `--queue` option in the artisan call. The given queue will b
 
 ```shell
 php artisan operations:process --queue=redis  // force redis queue 
+```
+
+### Run commands isolated on Multi-Server Architecture
+
+If you work with a Multi-Server Architecture you can use `--isolated` option to make sure to only run one instance of the command ([Laravel Isolatable Commands](https://laravel.com/docs/10.x/artisan#isolatable-commands)). 
+
+```shell
+php artisan operations:process --isolated 
 ```
 
 ### Run only operations with a given tag
