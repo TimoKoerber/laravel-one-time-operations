@@ -31,6 +31,11 @@ class OneTimeOperationFile
         return Str::remove('.php', $filename);
     }
 
+    public function getOperationFilePath(): string
+    {
+        return $this->file->getRealPath();
+    }
+
     public function getClassObject(): OneTimeOperation
     {
         if (! $this->classObject) {
