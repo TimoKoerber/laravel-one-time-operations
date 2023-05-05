@@ -13,21 +13,23 @@ class OneTimeOperationsServiceProvider extends ServiceProvider
     public function boot(): void
     {
         if ($this->app->runningInConsole()) {
-            $this->commands(OneTimeOperationsMakeCommand::class);
-            $this->commands(OneTimeOperationsProcessCommand::class);
-            $this->commands(OneTimeOperationShowCommand::class);
+            return;
+        }
+            
+        $this->commands(OneTimeOperationsMakeCommand::class);
+        $this->commands(OneTimeOperationsProcessCommand::class);
+        $this->commands(OneTimeOperationShowCommand::class);
 
-            $this->publishes([
-                 __DIR__.'/../../config/one-time-operations.php' => config_path('one-time-operations.php'),
-             ], 'one-time-operations-config');
+        $this->publishes([
+             __DIR__.'/../../config/one-time-operations.php' => config_path('one-time-operations.php'),
+         ], 'one-time-operations-config');
 
-            $this->publishes([
-                 __DIR__.'/../../database/migrations/2023_02_28_000000_create_one_time_operations_table.php' => database_path('migrations/'.date('Y_m_d_His', time()).'_create_one_time_operations_table.php'),
-             ], 'one-time-operations-migrations');
+        $this->publishes([
+             __DIR__.'/../../database/migrations/2023_02_28_000000_create_one_time_operations_table.php' => database_path('migrations/'.date('Y_m_d_His', time()).'_create_one_time_operations_table.php'),
+         ], 'one-time-operations-migrations');
 
-            if (! $this->migrationFileExists()) {
-                $this->loadMigrationsFrom([__DIR__.'/../../database/migrations']);
-            }
+        if (! $this->migrationFileExists()) {
+            $this->loadMigrationsFrom([__DIR__.'/../../database/migrations']);
         }
     }
 
