@@ -43,11 +43,11 @@ class OneTimeOperationsServiceProvider extends ServiceProvider
     protected function migrationFileExists(): bool
     {
         $files = $this->app->make(Filesystem::class)->glob(sprintf(
-           '%s%s%s',
-           database_path('migrations'),
-           DIRECTORY_SEPARATOR,
-           '*_create_one_time_operations_table.php'
-       ));
+            '%s%s%s',
+            database_path('migrations'),
+            DIRECTORY_SEPARATOR,
+            '*_create_one_time_operations_table.php'
+        ));
 
         return count($files) > 0;
     }
