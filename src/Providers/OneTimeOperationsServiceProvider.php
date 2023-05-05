@@ -15,18 +15,18 @@ class OneTimeOperationsServiceProvider extends ServiceProvider
         if (! $this->app->runningInConsole()) {
             return;
         }
-            
+
         $this->commands(OneTimeOperationsMakeCommand::class);
         $this->commands(OneTimeOperationsProcessCommand::class);
         $this->commands(OneTimeOperationShowCommand::class);
 
         $this->publishes([
-             __DIR__.'/../../config/one-time-operations.php' => config_path('one-time-operations.php'),
-         ], 'one-time-operations-config');
+            __DIR__.'/../../config/one-time-operations.php' => config_path('one-time-operations.php'),
+        ], 'one-time-operations-config');
 
         $this->publishes([
-             __DIR__.'/../../database/migrations/2023_02_28_000000_create_one_time_operations_table.php' => database_path('migrations/'.date('Y_m_d_His', time()).'_create_one_time_operations_table.php'),
-         ], 'one-time-operations-migrations');
+            __DIR__.'/../../database/migrations/2023_02_28_000000_create_one_time_operations_table.php' => database_path('migrations/'.date('Y_m_d_His', time()).'_create_one_time_operations_table.php'),
+        ], 'one-time-operations-migrations');
 
         if (! $this->migrationFileExists()) {
             $this->loadMigrationsFrom([__DIR__.'/../../database/migrations']);
