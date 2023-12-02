@@ -14,6 +14,8 @@ use TimoKoerber\LaravelOneTimeOperations\Models\Operation;
 
 class OneTimeOperationManager
 {
+    private static $paths = [];
+
     /**
      * @return Collection<OneTimeOperationFile>
      */
@@ -54,7 +56,13 @@ class OneTimeOperationManager
     public static function getAllFiles(): Collection
     {
         try {
-            return collect(File::files(self::getDirectoryPath()));
+            $files = [];
+
+            foreach (self::getOperationPaths() as $path) {
+                $files = array_merge($files, File::files($path));
+            }
+
+            return collect($files);
         } catch (DirectoryNotFoundException $e) {
             return collect();
         }
@@ -95,7 +103,17 @@ class OneTimeOperationManager
 
     public static function pathToFileByName(string $operationName): string
     {
-        return self::getDirectoryPath().self::buildFilename($operationName);
+        foreach (self::getOperationPaths() as $path) {
+            $path = Str::of($path)->rtrim('/');
+            $fullPath = $path . DIRECTORY_SEPARATOR . self::buildFilename($operationName);
+            if (!file_exists($fullPath)) {
+                continue;
+            }
+
+            return $fullPath;
+        }
+
+        throw new \RuntimeException("The operation '$operationName' is invalid!");
     }
 
     public static function fileExistsByName(string $operationName): bool
@@ -111,6 +129,29 @@ class OneTimeOperationManager
     public static function getDirectoryPath(): string
     {
         return App::basePath(Str::of(self::getDirectoryName())->rtrim('/')).DIRECTORY_SEPARATOR;
+    }
+
+    /**
+     * Get all the operation paths.
+     *
+     * @return array
+     */
+    public static function getOperationPaths()
+    {
+        return array_merge(
+            self::$paths, [self::getDirectoryPath()]
+        );
+    }
+
+    /**
+     * Register operation paths.
+     *
+     * @param array|string $paths
+     * @return void
+     */
+    public static function loadOperationsFrom($paths)
+    {
+        self::$paths = array_merge(self::$paths, (array)$paths);
     }
 
     public static function getOperationNameFromFilename(string $filename): string
