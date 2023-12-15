@@ -18,7 +18,8 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand implement
                             {--async : Ignore setting in operation and process all operations asynchronously}
                             {--sync : Ignore setting in operation and process all operations synchronously}
                             {--queue= : Set the queue, that all jobs will be dispatched to}
-                            {--tag=* : Process only operations, that have one of the given tag}';
+                            {--tag=* : Process only operations, that have one of the given tag}
+                            {--path= : Path to load the files from}';
 
     protected $description = 'Process all unprocessed one-time operations';
 
@@ -32,6 +33,10 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand implement
 
     public function handle(): int
     {
+        if($this->option('path')) {
+            OneTimeOperationManager::setDirectoryName($this->option('path'));
+        }
+
         $this->displayTestmodeWarning();
 
         $this->forceAsync = (bool) $this->option('async');

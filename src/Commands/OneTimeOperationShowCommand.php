@@ -11,7 +11,7 @@ use TimoKoerber\LaravelOneTimeOperations\OneTimeOperationManager;
 
 class OneTimeOperationShowCommand extends OneTimeOperationsCommand
 {
-    protected $signature = 'operations:show {filter?* : List of filters: pending|processed|disposed}';
+    protected $signature = 'operations:show {filter?* : List of filters: pending|processed|disposed} {--path= : Path to load the files from}';
 
     protected $description = 'List of all one-time operations';
 
@@ -24,6 +24,10 @@ class OneTimeOperationShowCommand extends OneTimeOperationsCommand
     public function handle(): int
     {
         try {
+            if($this->option('path')) {
+                OneTimeOperationManager::setDirectoryName($this->option('path'));
+            }
+
             $this->validateFilters();
             $this->newLine();
 

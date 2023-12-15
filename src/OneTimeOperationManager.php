@@ -107,6 +107,11 @@ class OneTimeOperationManager
     {
         return Config::get('one-time-operations.directory');
     }
+    
+    public static function setDirectoryName($path): void
+    {
+        Config::set('one-time-operations.directory', $path);
+    }
 
     public static function getDirectoryPath(): string
     {
