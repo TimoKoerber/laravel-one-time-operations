@@ -69,7 +69,7 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand implement
         $providedOperationName = str($providedOperationName)->rtrim('.php')->toString();
 
         try {
-            if ($operationModel = OneTimeOperationManager::getModelByName($providedOperationName)) {
+            if ($operationModel = OneTimeOperationManager::getModelByName($providedOperationName, $this->option('database'))) {
                 return $this->processOperationModel($operationModel);
             }
 
@@ -122,7 +122,7 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand implement
     protected function processNextOperations(): int
     {
         $processingOutput = 'Processing operations.';
-        $unprocessedOperationFiles = OneTimeOperationManager::getUnprocessedOperationFiles();
+        $unprocessedOperationFiles = OneTimeOperationManager::getUnprocessedOperationFiles($this->option('database'));
 
         if ($this->tags) {
             $processingOutput = sprintf('Processing operations with tags (%s)', Arr::join($this->tags, ','));

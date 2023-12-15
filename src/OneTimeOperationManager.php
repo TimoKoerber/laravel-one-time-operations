@@ -17,9 +17,9 @@ class OneTimeOperationManager
     /**
      * @return Collection<OneTimeOperationFile>
      */
-    public static function getUnprocessedOperationFiles(): Collection
+    public static function getUnprocessedOperationFiles($connection = null): Collection
     {
-        $operationFiles = self::getUnprocessedFiles();
+        $operationFiles = self::getUnprocessedFiles($connection);
 
         return $operationFiles->map(fn (SplFileInfo $file) => OneTimeOperationFile::make($file));
     }
@@ -37,14 +37,19 @@ class OneTimeOperationManager
     /**
      * @return Collection<SplFileInfo>
      */
-    public static function getUnprocessedFiles(): Collection
+    public static function getUnprocessedFiles($connection = null): Collection
     {
         $allOperationFiles = self::getAllFiles();
 
-        return $allOperationFiles->filter(function (SplFileInfo $operationFilepath) {
+        return $allOperationFiles->filter(function (SplFileInfo $operationFilepath) use($connection) {
             $operation = self::getOperationNameFromFilename($operationFilepath->getBasename());
 
-            return Operation::whereName($operation)->doesntExist();
+            $model = new Operation();
+
+            if($connection)
+                $model->setConnection($connection);
+
+            return $model->whereName($operation)->doesntExist();
         });
     }
 
@@ -67,9 +72,14 @@ class OneTimeOperationManager
         return File::getRequire($filepath);
     }
 
-    public static function getModelByName(string $operationName): ?Operation
+    public static function getModelByName(string $operationName, $connection = null): ?Operation
     {
-        return Operation::whereName($operationName)->first();
+        $model = new Operation();
+
+        if($connection)
+            $model->setConnection($connection);
+
+        return $model->whereName($operationName)->first();
     }
 
     public static function getOperationFileByModel(Operation $operationModel): OneTimeOperationFile
