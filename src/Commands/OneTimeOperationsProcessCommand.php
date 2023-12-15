@@ -166,7 +166,7 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand implement
         if($this->option('database'))
             $operation->setConnection($this->option('database'));
 
-        Operation::storeOperation($operationFile->getOperationName(), $this->isAsyncMode($operationFile));
+        $operation->storeOperation($operationFile->getOperationName(), $this->isAsyncMode($operationFile));
     }
 
     protected function dispatchOperationJob(OneTimeOperationFile $operationFile)
