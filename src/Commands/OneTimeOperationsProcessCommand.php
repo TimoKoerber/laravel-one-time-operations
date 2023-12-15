@@ -19,6 +19,7 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand implement
                             {--sync : Ignore setting in operation and process all operations synchronously}
                             {--queue= : Set the queue, that all jobs will be dispatched to}
                             {--tag=* : Process only operations, that have one of the given tag}
+                            {--database= : Database connection for the operations table to be used}
                             {--path= : Path to load the files from}';
 
     protected $description = 'Process all unprocessed one-time operations';
@@ -159,6 +160,11 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand implement
         if ($this->testModeEnabled()) {
             return;
         }
+
+        $operation = new Operation();
+        
+        if($this->option('database'))
+            $operation->setConnection($this->option('database'));
 
         Operation::storeOperation($operationFile->getOperationName(), $this->isAsyncMode($operationFile));
     }
