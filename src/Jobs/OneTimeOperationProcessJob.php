@@ -14,9 +14,9 @@ class OneTimeOperationProcessJob implements ShouldQueue, ContractsOneTimeOperati
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public string $operationName;
+    public $operationName;
 
-    public function __construct(string $operationName)
+    public function __construct($operationName = null)
     {
         $this->operationName = $operationName;
     }
