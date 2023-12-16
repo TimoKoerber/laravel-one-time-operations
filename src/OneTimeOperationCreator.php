@@ -57,6 +57,11 @@ class OneTimeOperationCreator
 
     protected function getStubFilepath(): string
     {
+        // check for custom stub file
+        if (File::exists(base_path('stubs/one-time-operation.stub'))) {
+            return File::get(base_path('stubs/one-time-operation.stub'));
+        }
+
         if ($this->essential) {
             return File::get(__DIR__.'/../stubs/one-time-operation-essential.stub');
         }
