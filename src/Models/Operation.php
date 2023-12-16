@@ -39,9 +39,14 @@ class Operation extends Model
         return new OperationFactory();
     }
 
-    public static function storeOperation(string $operation, bool $async): self
+    public static function storeOperation(string $operation, bool $async, string $connection = null): self
     {
-        return self::firstOrCreate([
+        $model = new static();
+
+        if($connection)
+            $model->setConnection($connection);
+
+        return $model->firstOrCreate([
             'name' => $operation,
             'dispatched' => $async ? self::DISPATCHED_ASYNC : self::DISPATCHED_SYNC,
             'processed_at' => now(),
