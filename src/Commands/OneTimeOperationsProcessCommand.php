@@ -5,7 +5,7 @@ namespace TimoKoerber\LaravelOneTimeOperations\Commands;
 use Illuminate\Contracts\Console\Isolatable;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use TimoKoerber\LaravelOneTimeOperations\Jobs\OneTimeOperationProcessJob;
+use TimoKoerber\LaravelOneTimeOperations\Contracts\OneTimeOperationProcessJob;
 use TimoKoerber\LaravelOneTimeOperations\Models\Operation;
 use TimoKoerber\LaravelOneTimeOperations\OneTimeOperationFile;
 use TimoKoerber\LaravelOneTimeOperations\OneTimeOperationManager;
@@ -17,6 +17,7 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand implement
                             {--test : Process operation without tagging it as processed, so you can call it again}
                             {--async : Ignore setting in operation and process all operations asynchronously}
                             {--sync : Ignore setting in operation and process all operations synchronously}
+                            {--job : Set the job class to be used}
                             {--queue= : Set the queue, that all jobs will be dispatched to}
                             {--tag=* : Process only operations, that have one of the given tag}
                             {--database= : Database connection for the operations table to be used}
@@ -166,13 +167,20 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand implement
 
     protected function dispatchOperationJob(OneTimeOperationFile $operationFile)
     {
+        if($this->option('job'))
+        {
+            app()->forgetInstance(OneTimeOperationProcessJob::class);
+
+            app()->instance(OneTimeOperationProcessJob::class, $this->option('job'));
+        }
+
         if ($this->isAsyncMode($operationFile)) {
-            OneTimeOperationProcessJob::dispatch($operationFile->getOperationName())->onQueue($this->getQueue($operationFile));
+            resolve(OneTimeOperationProcessJob::class)::dispatch($operationFile->getOperationName())->onQueue($this->getQueue($operationFile));
 
             return;
         }
 
-        OneTimeOperationProcessJob::dispatchSync($operationFile->getOperationName());
+        resolve(OneTimeOperationProcessJob::class)::dispatchSync($operationFile->getOperationName());
     }
 
     protected function testModeEnabled(): bool

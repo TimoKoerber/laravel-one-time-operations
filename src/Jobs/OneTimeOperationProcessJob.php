@@ -7,9 +7,10 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use TimoKoerber\LaravelOneTimeOperations\Contracts\OneTimeOperationProcessJob as ContractsOneTimeOperationProcessJob;
 use TimoKoerber\LaravelOneTimeOperations\OneTimeOperationManager;
 
-class OneTimeOperationProcessJob implements ShouldQueue
+class OneTimeOperationProcessJob implements ShouldQueue, ContractsOneTimeOperationProcessJob
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
