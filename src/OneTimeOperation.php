@@ -5,7 +5,7 @@ namespace TimoKoerber\LaravelOneTimeOperations;
 abstract class OneTimeOperation
 {
     /**
-     * Determine if the operation is being processed asyncronously.
+     * Determine if the operation is being processed asynchronously.
      */
     protected bool $async = true;
 

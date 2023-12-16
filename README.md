@@ -49,8 +49,8 @@ php artisan operations:make <operation_name> -e|--essential // create file witho
 ```shell
 php artisan operations:process                   // process all new operation files
 
-php artisan operations:process --sync            // force syncronously execution
-php artisan operations:process --async           // force asyncronously execution
+php artisan operations:process --sync            // force synchronous execution
+php artisan operations:process --async           // force asynchronous execution
 php artisan operations:process --test            // dont flag operations as processed
 php artisan operations:process --isolated        // run command isolated
 
@@ -134,7 +134,7 @@ use TimoKoerber\LaravelOneTimeOperations\OneTimeOperation;
 return new class extends OneTimeOperation
 {
     /**
-     * Determine if the operation is being processed asyncronously.
+     * Determine if the operation is being processed asynchronously.
      */
     protected bool $async = true;
     
@@ -170,13 +170,13 @@ public function process(): void
 }
 ```
 
-By default, the operation is being processed ***asyncronously*** (based on your configuration) by dispatching the job `OneTimeOperationProcessJob`. 
+By default, the operation is being processed ***asynchronously*** (based on your configuration) by dispatching the job `OneTimeOperationProcessJob`.
 By default, the operation is being dispatched to the `default` queue of your project. Change the `$queue` as you wish.  
 
-You can also execute the code syncronously by setting the `$async` flag to `false`. 
+You can also execute the code synchronously by setting the `$async` flag to `false`.
 _(this is only recommended for small operations, since the processing of these operations should be part of the deployment process)_
 
-**Hint:** If you use syncronous processing, the `$queue` attribute will be ignored (duh!). 
+**Hint:** If you use synchronous processing, the `$queue` attribute will be ignored (duh!).
 
 ### Create a cleaner operation file
 
@@ -205,19 +205,19 @@ Your code will be executed, and you will find all the processed operations in th
 
 After that, this operation will not be processed anymore.
 
-### Dispatching Jobs syncronously or asyncronously 
+### Dispatching Jobs synchronously or asynchronously
 
 For each operation a `OneTimeOperationProcessJob` is being dispatched, 
 either with `dispatch()` oder `dispatchSync()` based on the `$async` attribute in the operation file.
 
-By providing the `--sync` or `--async` option with the `operations:process` command, you can force a syncronously/asyncronously execution and ignore the attribute:
+By providing the `--sync` or `--async` option with the `operations:process` command, you can force a synchronously/asynchronously execution and ignore the attribute:
 
 ```shell
 php artisan operations:process --async  // force dispatch()
 php artisan operations:process --sync   // force dispatchSync()  
 ```
 
-**Hint!** If `operation:process` is part of your deployment process, it is **not recommended** to process the operations syncronously, 
+**Hint!** If `operation:process` is part of your deployment process, it is **not recommended** to process the operations synchronously,
 since an error in your operation could make your whole deployment fail. 
 
 ### Force different queue for all operations 

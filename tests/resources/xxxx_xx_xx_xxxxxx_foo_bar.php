@@ -5,7 +5,7 @@ use TimoKoerber\LaravelOneTimeOperations\OneTimeOperation;
 return new class extends OneTimeOperation
 {
     /**
-     * Determine if the operation is being processed asyncronously.
+     * Determine if the operation is being processed asynchronously.
      *
      * @return bool
      */
