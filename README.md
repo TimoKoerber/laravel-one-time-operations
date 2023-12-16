@@ -187,6 +187,10 @@ php artisan operations:make AwesomeOperation --essential
 php artisan operations:make AwesomeOperation -e
 ```
 
+### Custom operation file
+
+You can provide a custom class layout in `/stubs/one-time-operation.stub`, which will be used to create a new operation file.  
+
 ### Processing the operations
 
 ![One-Time Operations for Laravel - Processing the operations](https://user-images.githubusercontent.com/65356688/224434129-43082402-6077-4043-8e97-c44786e60a59.png)
