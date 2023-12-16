@@ -17,7 +17,7 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand implement
                             {--test : Process operation without tagging it as processed, so you can call it again}
                             {--async : Ignore setting in operation and process all operations asynchronously}
                             {--sync : Ignore setting in operation and process all operations synchronously}
-                            {--job : Set the job class to be used}
+                            {--job= : Set the job class to be used}
                             {--queue= : Set the queue, that all jobs will be dispatched to}
                             {--tag=* : Process only operations, that have one of the given tag}
                             {--database= : Database connection for the operations table to be used}
