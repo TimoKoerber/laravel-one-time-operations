@@ -171,7 +171,7 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand implement
             return;
         }
 
-        dispatchAsync($operation);
+        dispatch_sync($operation);
     }
 
     protected function testModeEnabled(): bool
