@@ -15,6 +15,11 @@ abstract class OneTimeOperation
     protected string $queue = 'default';
 
     /**
+     * The timeout in seconds before the job is considered failed
+     */
+    protected ?int $timeout = 60;
+
+    /**
      * A tag name, that this operation can be filtered by.
      */
     protected ?string $tag = null;
@@ -37,5 +42,10 @@ abstract class OneTimeOperation
     public function getTag(): ?string
     {
         return $this->tag;
+    }
+
+    public function getTimeout(): ?int
+    {
+        return $this->timeout;
     }
 }

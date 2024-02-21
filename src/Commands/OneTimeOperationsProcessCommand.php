@@ -18,7 +18,8 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand implement
                             {--async : Ignore setting in operation and process all operations asynchronously}
                             {--sync : Ignore setting in operation and process all operations synchronously}
                             {--queue= : Set the queue, that all jobs will be dispatched to}
-                            {--tag=* : Process only operations, that have one of the given tag}';
+                            {--tag=* : Process only operations, that have one of the given tag}
+                            {--timeout=: Set the timeout after which jobs will fail}';
 
     protected $description = 'Process all unprocessed one-time operations';
 
@@ -27,6 +28,8 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand implement
     protected bool $forceSync = false;
 
     protected ?string $queue = null;
+
+    protected int $timeout = 60;
 
     protected array $tags = [];
 
@@ -37,6 +40,7 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand implement
         $this->forceAsync = (bool) $this->option('async');
         $this->forceSync = (bool) $this->option('sync');
         $this->queue = $this->option('queue');
+        $this->timeout = (int) $this->option('timeout');
         $this->tags = $this->option('tag');
 
         if (! $this->tagOptionsAreValid()) {
@@ -47,6 +51,12 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand implement
 
         if (! $this->syncOptionsAreValid()) {
             $this->components->error('Abort! Process either with --sync or --async.');
+
+            return self::FAILURE;
+        }
+
+        if (! $this->timeoutOptionsAreValid()) {
+            $this->components->error('Abort! --timeout should be a number greater than 0');
 
             return self::FAILURE;
         }
@@ -161,7 +171,7 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand implement
     protected function dispatchOperationJob(OneTimeOperationFile $operationFile)
     {
         if ($this->isAsyncMode($operationFile)) {
-            OneTimeOperationProcessJob::dispatch($operationFile->getOperationName())->onQueue($this->getQueue($operationFile));
+            OneTimeOperationProcessJob::dispatch($operationFile->getOperationName())->onQueue($this->getQueue($operationFile))->timeout($this->getTimeout($operationFile));
 
             return;
         }
@@ -203,6 +213,15 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand implement
         return $operationFile->getClassObject()->getQueue() ?: null;
     }
 
+    protected function getTimeout(OneTimeOperationFile $operationFile): ?string
+    {
+        if ($this->timeout) {
+            return $this->timeout;
+        }
+
+        return $operationFile->getClassObject()->getTimeout() ?: null;
+    }
+
     protected function filterOperationsByTags(Collection $unprocessedOperationFiles): Collection
     {
         return $unprocessedOperationFiles->filter(function (OneTimeOperationFile $operationFile) {
@@ -225,9 +244,9 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand implement
         return false;
     }
 
-    protected function syncOptionsAreValid(): bool
+    protected function timeoutOptionsAreValid(): bool
     {
-        // do not use both options at the same time
-        return ! ($this->forceAsync && $this->forceSync);
+        return $this->timeout > 0;
     }
+    
 }
