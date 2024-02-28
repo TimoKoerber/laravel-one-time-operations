@@ -52,24 +52,24 @@ php artisan operations:make <operation_name> -e|--essential
 ### Process operations
 
 Process all new operation files:
-    ```shell
-    php artisan operations:process
-    ```
+```shell
+php artisan operations:process
+```
 
-  Force synchronous execution:
-    ```shell
-    php artisan operations:process --sync
-    ```
+Force synchronous execution:
+```shell
+php artisan operations:process --sync
+```
 
 Force asynchronous execution:
-    ```shell
-    php artisan operations:process --async
-    ```
+```shell
+php artisan operations:process --async
+```
 
 Test mode (don't flag operations as processed):
-    ```shell
-    php artisan operations:process --test
-    ```
+```shell
+php artisan operations:process --test
+```
 
 Run command isolated:
     ```shell
