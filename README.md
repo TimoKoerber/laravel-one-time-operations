@@ -72,51 +72,51 @@ php artisan operations:process --test
 ```
 
 Run command isolated:
-    ```shell
-    php artisan operations:process --isolated
-    ```
+```shell
+php artisan operations:process --isolated
+```
 
 Force a specific queue for the job:
-    ```shell
-    php artisan operations:process --queue=<name>
-    ```
+```shell
+php artisan operations:process --queue=<name>
+```
 
 Only process operations with a specific tag:
-    ```shell
-    php artisan operations:process --tag=<tagname>
-    ```
+```shell
+php artisan operations:process --tag=<tagname>
+```
 
 Re-run one specific operation:
-    ```shell
-    php artisan operations:process <operation_name>
-    ```
+```shell
+php artisan operations:process <operation_name>
+```
 
 ### Show operations
 
 Show all operations:
-    ```shell
-    php artisan operations:show
-    ```
+```shell
+php artisan operations:show
+```
 
 Show pending operations:
-    ```shell
-    php artisan operations:show pending
-    ```
+```shell
+php artisan operations:show pending
+```
 
 Show processed operations:
-    ```shell
-    php artisan operations:show processed
-    ```
+```shell
+php artisan operations:show processed
+```
 
 Show disposed operations:
-    ```shell
-    php artisan operations:show disposed
-    ```
+```shell
+php artisan operations:show disposed
+```
 
 Use multiple filters to show operations:
-    ```shell
-    php artisan operations:show pending processed disposed
-    ```
+```shell
+php artisan operations:show pending processed disposed
+```
 
 ## Tutorials
 
