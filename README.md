@@ -40,25 +40,57 @@ Now you're all set!
 ## Commands
 
 ### Create operation files
+Create new operation file:
 ```shell
-php artisan operations:make <operation_name>                // create new operation file
-php artisan operations:make <operation_name> -e|--essential // create file without any attributes
+php artisan operations:make <operation_name>
+```
+Create file without any attributes:
+```shell
+php artisan operations:make <operation_name> -e|--essential
 ```
 
 ### Process operations
-```shell
-php artisan operations:process                   // process all new operation files
 
-php artisan operations:process --sync            // force synchronous execution
-php artisan operations:process --async           // force asynchronous execution
-php artisan operations:process --test            // dont flag operations as processed
-php artisan operations:process --isolated        // run command isolated
+- **Process all new operation files:**
+    ```shell
+    php artisan operations:process
+    ```
 
-php artisan operations:process --queue=<name>    // force queue, that the job will be dispatched to
-php artisan operations:process --tag=<tagname>   // only process operations, that have the given tag
+- **Force synchronous execution:**
+    ```shell
+    php artisan operations:process --sync
+    ```
 
-php artisan operations:process <operation_name>  // re-run one specific operation
-```
+- **Force asynchronous execution:**
+    ```shell
+    php artisan operations:process --async
+    ```
+
+- **Test mode (don't flag operations as processed):**
+    ```shell
+    php artisan operations:process --test
+    ```
+
+- **Run command isolated:**
+    ```shell
+    php artisan operations:process --isolated
+    ```
+
+- **Force a specific queue for the job:**
+    ```shell
+    php artisan operations:process --queue=<name>
+    ```
+
+- **Only process operations with a specific tag:**
+    ```shell
+    php artisan operations:process --tag=<tagname>
+    ```
+
+- **Re-run one specific operation:**
+    ```shell
+    php artisan operations:process <operation_name>
+    ```
+
 
 ### Show operations
 ```shell
