@@ -5,19 +5,11 @@
 
 version: 2
 updates:
-  - package-ecosystem: "composer" # See documentation for possible values
-    directory: "/" # Location of package manifests
-    schedule:
-      interval: daily
-      time: "12:00"
-      timezone: America/Chicago
-    reviewers:
-      - "EncoreDigitalGroup/dependency-management"
-  - package-ecosystem: "npm" # See documentation for possible values
-    directory: "/" # Location of package manifests
-    schedule:
-      interval: daily
-      time: "12:00"
-      timezone: America/Chicago
-    reviewers:
-      - "EncoreDigitalGroup/dependency-management"
+    -   package-ecosystem: "composer" # See documentation for possible values
+        directory: "/" # Location of package manifests
+        schedule:
+            interval: daily
+            time: "12:00"
+            timezone: America/Chicago
+        reviewers:
+            - "EncoreDigitalGroup/dependency-management"
