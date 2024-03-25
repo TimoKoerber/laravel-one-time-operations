@@ -1,28 +1,30 @@
 name: Pull Request
 
 on:
-  pull_request_target:
+    pull_request_target:
 
 permissions:
-  contents: write
-  pull-requests: write
+    contents: write
+    pull-requests: write
 
 jobs:
-  Duster:
-    name: Duster
-    uses: EncoreDigitalGroup/.github/.github/workflows/duster-fix.yml@main
-    permissions:
-      contents: write
-      pull-requests: write
-  StaticAnalysis:
-    needs: Duster
-    name: RunLarastan
-    uses: EncoreDigitalGroup/.github/.github/workflows/larastan.yml@main
-  UnitTests:
-    needs: StaticAnalysis
-    name: Run Tests
-    uses: EncoreDigitalGroup/.github/.github/workflows/phpunit.yml@main
-  AutoMerge:
-    needs: UnitTests
-    name: AutoMerge
-    uses: EncoreDigitalGroup/.github/.github/workflows/dependabot-auto-merge.yml@main
+    Duster:
+        name: Duster
+        uses: EncoreDigitalGroup/.github/.github/workflows/duster-fix.yml@main
+        permissions:
+            contents: write
+            pull-requests: write
+    StaticAnalysis:
+        needs: Duster
+        name: RunLarastan
+        uses: EncoreDigitalGroup/.github/.github/workflows/larastan.yml@main
+        with:
+            path: 'src/'
+    UnitTests:
+        needs: StaticAnalysis
+        name: Run Tests
+        uses: EncoreDigitalGroup/.github/.github/workflows/phpunit.yml@main
+    AutoMerge:
+        needs: UnitTests
+        name: AutoMerge
+        uses: EncoreDigitalGroup/.github/.github/workflows/dependabot-auto-merge.yml@main
