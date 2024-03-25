@@ -27,7 +27,7 @@ This package is for you if...
 Require this package with composer:
 
 ```shell
-composer require timokoerber/laravel-one-time-operations
+composer require encoredigitalgroup/laravel-operations
 ```
 
 Create the required table in your database:
@@ -93,13 +93,13 @@ You can make it part of your deployment script like this:
 
 By default, the following elements will be created in your project:
 
-- the table `operations` in your database
+- the table `sys_operations` in your database
 - the directory `operations` in your project root directory
 
 If you want to use a different settings just publish and edit the config file:
 
 ```shell
-php artisan vendor:publish --provider="EncoreDigitalGroup\LaravelOperations\Providers\OneTimeOperationsServiceProvider"
+php artisan vendor:publish --provider="EncoreDigitalGroup\LaravelOperations\Providers\LaravelOperationsServiceProvider"
 ```
 
 This will create the file `config/operations.php` with the following content.
@@ -109,7 +109,7 @@ This will create the file `config/operations.php` with the following content.
 
 return [
     'directory' => 'operations',
-    'table' => 'operations',
+    'table' => 'sys_operations',
 ];
 ```
 
@@ -341,7 +341,7 @@ composer test
 
 ## License
 
-Copyright © Timo Körber | [www.timokoerber.com](https://www.timokoerber.com)
-
 "One-Time Operations for Laravel" is open-sourced software licensed under the [MIT license](LICENSE).
 
+Note: this is a fork
+of [timokoerber/laravel-one-time-operations](https://github.com/timokoerber/laravel-one-time-operations)
