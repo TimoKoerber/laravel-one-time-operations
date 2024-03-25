@@ -1,6 +1,6 @@
 <?php
 
-namespace TimoKoerber\LaravelOneTimeOperations\Commands\Utils;
+namespace EncoreDigitalGroup\LaravelOperations\Commands\Utils;
 
 trait ColoredOutput
 {

@@ -1,21 +1,22 @@
 <?php
 
-namespace TimoKoerber\LaravelOneTimeOperations\Commands\Utils;
+namespace EncoreDigitalGroup\LaravelOperations\Commands\Utils;
 
 use Illuminate\Console\View\Components\Factory;
 use Illuminate\Support\Carbon;
-use TimoKoerber\LaravelOneTimeOperations\Commands\OneTimeOperationsCommand;
+use EncoreDigitalGroup\LaravelOperations\Commands\LaravelOperationsCommand;
 
 class OperationsLineElement
 {
     use ColoredOutput;
 
     public function __construct(
-        public string $name,
-        public string $status,
+        public string  $name,
+        public string  $status,
         public ?Carbon $processedAt = null,
         public ?string $tag = null,
-    ) {
+    )
+    {
     }
 
     public static function make(string $name, string $status, Carbon $processedAt = null, string $tag = null): self
@@ -33,7 +34,7 @@ class OperationsLineElement
         $label = $this->name;
 
         if ($this->tag) {
-            $label .= ' '.$this->gray('('.$this->tag.')');
+            $label .= ' ' . $this->gray('(' . $this->tag . ')');
         }
 
         return $label;
@@ -44,7 +45,7 @@ class OperationsLineElement
         $label = $this->coloredStatus($this->status);
 
         if ($this->processedAt) {
-            $label = $this->gray($this->processedAt).' '.$label;
+            $label = $this->gray($this->processedAt) . ' ' . $label;
         }
 
         return $label;
@@ -53,8 +54,8 @@ class OperationsLineElement
     protected function coloredStatus(string $status): string
     {
         return match ($status) {
-            OneTimeOperationsCommand::LABEL_DISPOSED => $this->green($status),
-            OneTimeOperationsCommand::LABEL_PROCESSED => $this->brightgreen($status),
+            LaravelOperationsCommand::LABEL_DISPOSED => $this->green($status),
+            LaravelOperationsCommand::LABEL_PROCESSED => $this->brightgreen($status),
             default => $this->white($status),
         };
     }

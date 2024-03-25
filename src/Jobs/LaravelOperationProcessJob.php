@@ -1,15 +1,15 @@
 <?php
 
-namespace TimoKoerber\LaravelOneTimeOperations\Jobs;
+namespace EncoreDigitalGroup\LaravelOperations\Jobs;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use TimoKoerber\LaravelOneTimeOperations\OneTimeOperationManager;
+use EncoreDigitalGroup\LaravelOperations\LaravelOperationManager;
 
-class OneTimeOperationProcessJob implements ShouldQueue
+class LaravelOperationProcessJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -22,6 +22,6 @@ class OneTimeOperationProcessJob implements ShouldQueue
 
     public function handle(): void
     {
-        OneTimeOperationManager::getClassObjectByName($this->operationName)->process();
+        LaravelOperationManager::getClassObjectByName($this->operationName)->process();
     }
 }

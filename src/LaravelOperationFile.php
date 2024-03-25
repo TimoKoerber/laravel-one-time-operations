@@ -1,17 +1,17 @@
 <?php
 
-namespace TimoKoerber\LaravelOneTimeOperations;
+namespace EncoreDigitalGroup\LaravelOperations;
 
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use SplFileInfo;
-use TimoKoerber\LaravelOneTimeOperations\Models\Operation;
+use EncoreDigitalGroup\LaravelOperations\Models\Operation;
 
-class OneTimeOperationFile
+class LaravelOperationFile
 {
     protected SplFileInfo $file;
 
-    protected ?OneTimeOperation $classObject = null;
+    protected ?LaravelOperation $classObject = null;
 
     public static function make(SplFileInfo $file): self
     {
@@ -31,9 +31,9 @@ class OneTimeOperationFile
         return Str::remove('.php', $filename);
     }
 
-    public function getClassObject(): OneTimeOperation
+    public function getClassObject(): LaravelOperation
     {
-        if (! $this->classObject) {
+        if (!$this->classObject) {
             $this->classObject = File::getRequire($this->file);
         }
 

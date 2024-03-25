@@ -1,15 +1,15 @@
 <?php
 
-namespace TimoKoerber\LaravelOneTimeOperations\Commands;
+namespace EncoreDigitalGroup\LaravelOperations\Commands;
 
 use Illuminate\Support\Collection;
 use Throwable;
-use TimoKoerber\LaravelOneTimeOperations\Commands\Utils\OperationsLineElement;
-use TimoKoerber\LaravelOneTimeOperations\Models\Operation;
-use TimoKoerber\LaravelOneTimeOperations\OneTimeOperationFile;
-use TimoKoerber\LaravelOneTimeOperations\OneTimeOperationManager;
+use EncoreDigitalGroup\LaravelOperations\Commands\Utils\OperationsLineElement;
+use EncoreDigitalGroup\LaravelOperations\Models\Operation;
+use EncoreDigitalGroup\LaravelOperations\LaravelOperationFile;
+use EncoreDigitalGroup\LaravelOperations\LaravelOperationManager;
 
-class OneTimeOperationShowCommand extends OneTimeOperationsCommand
+class LaravelOperationShowCommand extends LaravelOperationsCommand
 {
     protected $signature = 'operations:show {filter?* : List of filters: pending|processed|disposed}';
 
@@ -54,10 +54,10 @@ class OneTimeOperationShowCommand extends OneTimeOperationsCommand
      */
     protected function validateFilters(): void
     {
-        $filters = array_map(fn ($filter) => strtolower($filter), $this->argument('filter'));
-        $validFilters = array_map(fn ($filter) => strtolower($filter), $this->validFilters);
+        $filters = array_map(fn($filter) => strtolower($filter), $this->argument('filter'));
+        $validFilters = array_map(fn($filter) => strtolower($filter), $this->validFilters);
 
-        throw_if(array_diff($filters, $validFilters), \Exception::class, 'Given filter is not valid. Allowed filters: '.implode('|', array_map('strtolower', $this->validFilters)));
+        throw_if(array_diff($filters, $validFilters), \Exception::class, 'Given filter is not valid. Allowed filters: ' . implode('|', array_map('strtolower', $this->validFilters)));
     }
 
     protected function shouldDisplayByFilter(string $filterName): bool
@@ -68,7 +68,7 @@ class OneTimeOperationShowCommand extends OneTimeOperationsCommand
             return true;
         }
 
-        $givenFilters = array_map(fn ($filter) => strtolower($filter), $givenFilters);
+        $givenFilters = array_map(fn($filter) => strtolower($filter), $givenFilters);
 
         return in_array(strtolower($filterName), $givenFilters);
     }
@@ -76,12 +76,12 @@ class OneTimeOperationShowCommand extends OneTimeOperationsCommand
     protected function getOperationLinesForOutput(): Collection
     {
         $operationModels = Operation::all();
-        $operationFiles = OneTimeOperationManager::getAllOperationFiles();
+        $operationFiles = LaravelOperationManager::getAllOperationFiles();
         $operationOutputLines = collect();
 
         // add disposed operations
         foreach ($operationModels as $operation) {
-            if (OneTimeOperationManager::fileExistsByName($operation->name)) {
+            if (LaravelOperationManager::fileExistsByName($operation->name)) {
                 continue;
             }
 
@@ -90,7 +90,7 @@ class OneTimeOperationShowCommand extends OneTimeOperationsCommand
 
         // add processed and pending operations
         foreach ($operationFiles->toArray() as $file) {
-            /** @var OneTimeOperationFile $file */
+            /** @var LaravelOperationFile $file */
             if ($model = $file->getModel()) {
                 $operationOutputLines->add(OperationsLineElement::make($model->name, self::LABEL_PROCESSED, $model->processed_at, $file->getClassObject()->getTag()));
             } else {

@@ -1,11 +1,11 @@
 <?php
 
-namespace TimoKoerber\LaravelOneTimeOperations\Commands;
+namespace EncoreDigitalGroup\LaravelOperations\Commands;
 
 use Throwable;
-use TimoKoerber\LaravelOneTimeOperations\OneTimeOperationCreator;
+use EncoreDigitalGroup\LaravelOperations\LaravelOperationCreator;
 
-class OneTimeOperationsMakeCommand extends OneTimeOperationsCommand
+class LaravelOperationsMakeCommand extends LaravelOperationsCommand
 {
     protected $signature = 'operations:make
                             {name : The name of the one-time operation}
@@ -16,7 +16,7 @@ class OneTimeOperationsMakeCommand extends OneTimeOperationsCommand
     public function handle(): int
     {
         try {
-            $file = OneTimeOperationCreator::createOperationFile($this->argument('name'), $this->option('essential'));
+            $file = LaravelOperationCreator::createOperationFile($this->argument('name'), $this->option('essential'));
             $this->components->info(sprintf('One-time operation [%s] created successfully.', $file->getOperationName()));
 
             return self::SUCCESS;

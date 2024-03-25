@@ -1,16 +1,16 @@
 <?php
 
-namespace TimoKoerber\LaravelOneTimeOperations\Commands;
+namespace EncoreDigitalGroup\LaravelOperations\Commands;
 
 use Illuminate\Contracts\Console\Isolatable;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use TimoKoerber\LaravelOneTimeOperations\Jobs\OneTimeOperationProcessJob;
-use TimoKoerber\LaravelOneTimeOperations\Models\Operation;
-use TimoKoerber\LaravelOneTimeOperations\OneTimeOperationFile;
-use TimoKoerber\LaravelOneTimeOperations\OneTimeOperationManager;
+use EncoreDigitalGroup\LaravelOperations\Jobs\LaravelOperationProcessJob;
+use EncoreDigitalGroup\LaravelOperations\Models\Operation;
+use EncoreDigitalGroup\LaravelOperations\LaravelOperationFile;
+use EncoreDigitalGroup\LaravelOperations\LaravelOperationManager;
 
-class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand implements Isolatable
+class LaravelOperationsProcessCommand extends LaravelOperationsCommand implements Isolatable
 {
     protected $signature = 'operations:process
                             {name? : Name of specific operation}
@@ -34,18 +34,18 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand implement
     {
         $this->displayTestmodeWarning();
 
-        $this->forceAsync = (bool) $this->option('async');
-        $this->forceSync = (bool) $this->option('sync');
+        $this->forceAsync = (bool)$this->option('async');
+        $this->forceSync = (bool)$this->option('sync');
         $this->queue = $this->option('queue');
         $this->tags = $this->option('tag');
 
-        if (! $this->tagOptionsAreValid()) {
+        if (!$this->tagOptionsAreValid()) {
             $this->components->error('Abort! Do not provide empty tags!');
 
             return self::FAILURE;
         }
 
-        if (! $this->syncOptionsAreValid()) {
+        if (!$this->syncOptionsAreValid()) {
             $this->components->error('Abort! Process either with --sync or --async.');
 
             return self::FAILURE;
@@ -63,11 +63,11 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand implement
         $providedOperationName = str($providedOperationName)->rtrim('.php')->toString();
 
         try {
-            if ($operationModel = OneTimeOperationManager::getModelByName($providedOperationName)) {
+            if ($operationModel = LaravelOperationManager::getModelByName($providedOperationName)) {
                 return $this->processOperationModel($operationModel);
             }
 
-            $operationsFile = OneTimeOperationManager::getOperationFileByName($providedOperationName);
+            $operationsFile = LaravelOperationManager::getOperationFileByName($providedOperationName);
 
             return $this->processOperationFile($operationsFile);
         } catch (\Throwable $e) {
@@ -77,7 +77,7 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand implement
         }
     }
 
-    protected function processOperationFile(OneTimeOperationFile $operationFile): int
+    protected function processOperationFile(LaravelOperationFile $operationFile): int
     {
         $this->components->task($operationFile->getOperationName(), function () use ($operationFile) {
             $this->dispatchOperationJob($operationFile);
@@ -92,7 +92,7 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand implement
 
     protected function processOperationModel(Operation $operationModel): int
     {
-        if (! $this->components->confirm('Operation was processed before. Process it again?')) {
+        if (!$this->components->confirm('Operation was processed before. Process it again?')) {
             $this->components->info('Operation aborted');
 
             return self::SUCCESS;
@@ -101,7 +101,7 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand implement
         $this->components->info(sprintf('Processing operation %s.', $operationModel->name));
 
         $this->components->task($operationModel->name, function () use ($operationModel) {
-            $operationFile = OneTimeOperationManager::getOperationFileByModel($operationModel);
+            $operationFile = LaravelOperationManager::getOperationFileByModel($operationModel);
 
             $this->dispatchOperationJob($operationFile);
             $this->storeOperation($operationFile);
@@ -116,7 +116,7 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand implement
     protected function processNextOperations(): int
     {
         $processingOutput = 'Processing operations.';
-        $unprocessedOperationFiles = OneTimeOperationManager::getUnprocessedOperationFiles();
+        $unprocessedOperationFiles = LaravelOperationManager::getUnprocessedOperationFiles();
 
         if ($this->tags) {
             $processingOutput = sprintf('Processing operations with tags (%s)', Arr::join($this->tags, ','));
@@ -144,12 +144,12 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand implement
         return self::SUCCESS;
     }
 
-    protected function tagMatched(OneTimeOperationFile $operationFile): bool
+    protected function tagMatched(LaravelOperationFile $operationFile): bool
     {
         return in_array($operationFile->getClassObject()->getTag(), $this->tags);
     }
 
-    protected function storeOperation(OneTimeOperationFile $operationFile): void
+    protected function storeOperation(LaravelOperationFile $operationFile): void
     {
         if ($this->testModeEnabled()) {
             return;
@@ -158,15 +158,15 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand implement
         Operation::storeOperation($operationFile->getOperationName(), $this->isAsyncMode($operationFile));
     }
 
-    protected function dispatchOperationJob(OneTimeOperationFile $operationFile)
+    protected function dispatchOperationJob(LaravelOperationFile $operationFile)
     {
         if ($this->isAsyncMode($operationFile)) {
-            OneTimeOperationProcessJob::dispatch($operationFile->getOperationName())->onQueue($this->getQueue($operationFile));
+            LaravelOperationProcessJob::dispatch($operationFile->getOperationName())->onQueue($this->getQueue($operationFile));
 
             return;
         }
 
-        OneTimeOperationProcessJob::dispatchSync($operationFile->getOperationName());
+        LaravelOperationProcessJob::dispatchSync($operationFile->getOperationName());
     }
 
     protected function testModeEnabled(): bool
@@ -181,7 +181,7 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand implement
         }
     }
 
-    protected function isAsyncMode(OneTimeOperationFile $operationFile): bool
+    protected function isAsyncMode(LaravelOperationFile $operationFile): bool
     {
         if ($this->forceAsync) {
             return true;
@@ -194,7 +194,7 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand implement
         return $operationFile->getClassObject()->isAsync();
     }
 
-    protected function getQueue(OneTimeOperationFile $operationFile): ?string
+    protected function getQueue(LaravelOperationFile $operationFile): ?string
     {
         if ($this->queue) {
             return $this->queue;
@@ -205,7 +205,7 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand implement
 
     protected function filterOperationsByTags(Collection $unprocessedOperationFiles): Collection
     {
-        return $unprocessedOperationFiles->filter(function (OneTimeOperationFile $operationFile) {
+        return $unprocessedOperationFiles->filter(function (LaravelOperationFile $operationFile) {
             return $this->tagMatched($operationFile);
         })->collect();
     }
@@ -228,6 +228,6 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand implement
     protected function syncOptionsAreValid(): bool
     {
         // do not use both options at the same time
-        return ! ($this->forceAsync && $this->forceSync);
+        return !($this->forceAsync && $this->forceSync);
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace TimoKoerber\LaravelOneTimeOperations;
+namespace EncoreDigitalGroup\LaravelOperations;
 
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Collection;
@@ -10,18 +10,18 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use SplFileInfo;
 use Symfony\Component\Finder\Exception\DirectoryNotFoundException;
-use TimoKoerber\LaravelOneTimeOperations\Models\Operation;
+use EncoreDigitalGroup\LaravelOperations\Models\Operation;
 
-class OneTimeOperationManager
+class LaravelOperationManager
 {
     /**
-     * @return Collection<OneTimeOperationFile>
+     * @return Collection<LaravelOperationFile>
      */
     public static function getUnprocessedOperationFiles(): Collection
     {
         $operationFiles = self::getUnprocessedFiles();
 
-        return $operationFiles->map(fn (SplFileInfo $file) => OneTimeOperationFile::make($file));
+        return $operationFiles->map(fn(SplFileInfo $file) => LaravelOperationFile::make($file));
     }
 
     /**
@@ -31,7 +31,7 @@ class OneTimeOperationManager
     {
         $operationFiles = self::getAllFiles();
 
-        return $operationFiles->map(fn (SplFileInfo $file) => OneTimeOperationFile::make($file));
+        return $operationFiles->map(fn(SplFileInfo $file) => LaravelOperationFile::make($file));
     }
 
     /**
@@ -60,7 +60,7 @@ class OneTimeOperationManager
         }
     }
 
-    public static function getClassObjectByName(string $operationName): OneTimeOperation
+    public static function getClassObjectByName(string $operationName): LaravelOperation
     {
         $filepath = self::pathToFileByName($operationName);
 
@@ -72,30 +72,30 @@ class OneTimeOperationManager
         return Operation::whereName($operationName)->first();
     }
 
-    public static function getOperationFileByModel(Operation $operationModel): OneTimeOperationFile
+    public static function getOperationFileByModel(Operation $operationModel): LaravelOperationFile
     {
         $filepath = self::pathToFileByName($operationModel->name);
 
         throw_unless(File::exists($filepath), FileNotFoundException::class);
 
-        return OneTimeOperationFile::make(new SplFileInfo($filepath));
+        return LaravelOperationFile::make(new SplFileInfo($filepath));
     }
 
     /**
      * @throws \Throwable
      */
-    public static function getOperationFileByName(string $operationName): OneTimeOperationFile
+    public static function getOperationFileByName(string $operationName): LaravelOperationFile
     {
         $filepath = self::pathToFileByName($operationName);
 
         throw_unless(File::exists($filepath), FileNotFoundException::class, sprintf('File %s does not exist', self::buildFilename($operationName)));
 
-        return OneTimeOperationFile::make(new SplFileInfo($filepath));
+        return LaravelOperationFile::make(new SplFileInfo($filepath));
     }
 
     public static function pathToFileByName(string $operationName): string
     {
-        return self::getDirectoryPath().self::buildFilename($operationName);
+        return self::getDirectoryPath() . self::buildFilename($operationName);
     }
 
     public static function fileExistsByName(string $operationName): bool
@@ -105,12 +105,12 @@ class OneTimeOperationManager
 
     public static function getDirectoryName(): string
     {
-        return Config::get('one-time-operations.directory');
+        return Config::get('operations.directory');
     }
 
     public static function getDirectoryPath(): string
     {
-        return App::basePath(Str::of(self::getDirectoryName())->rtrim('/')).DIRECTORY_SEPARATOR;
+        return App::basePath(Str::of(self::getDirectoryName())->rtrim('/')) . DIRECTORY_SEPARATOR;
     }
 
     public static function getOperationNameFromFilename(string $filename): string
@@ -120,11 +120,11 @@ class OneTimeOperationManager
 
     public static function getTableName(): string
     {
-        return Config::get('one-time-operations.table', 'operations'); // @TODO
+        return Config::get('operations.table', 'operations'); // @TODO
     }
 
     public static function buildFilename($operationName): string
     {
-        return $operationName.'.php';
+        return $operationName . '.php';
     }
 }

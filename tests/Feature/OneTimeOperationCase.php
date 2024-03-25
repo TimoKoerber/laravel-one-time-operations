@@ -1,16 +1,16 @@
 <?php
 
-namespace TimoKoerber\LaravelOneTimeOperations\Tests\Feature;
+namespace EncoreDigitalGroup\LaravelOperations\Tests\Feature;
 
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Queue;
 use Orchestra\Testbench\TestCase;
-use TimoKoerber\LaravelOneTimeOperations\Providers\OneTimeOperationsServiceProvider;
+use EncoreDigitalGroup\LaravelOperations\Providers\LaravelOperationsServiceProvider;
 
 abstract class OneTimeOperationCase extends TestCase
 {
-    protected  const TEST_OPERATION_NAME = 'xxxx_xx_xx_xxxxxx_foo_bar';
+    protected const TEST_OPERATION_NAME = 'xxxx_xx_xx_xxxxxx_foo_bar';
 
     protected const TEST_FILE_DIRECTORY = 'tests/files';
 
@@ -29,15 +29,15 @@ abstract class OneTimeOperationCase extends TestCase
     protected function getPackageProviders($app): array
     {
         return [
-            OneTimeOperationsServiceProvider::class,
+            LaravelOperationsServiceProvider::class,
         ];
     }
 
     protected function defineEnvironment($app)
     {
         // Setup directory to provide test files
-        $app['config']->set('one-time-operations.directory', '../../../../'.self::TEST_FILE_DIRECTORY);
-        $app['config']->set('one-time-operations.table', self::TEST_TABLE_NAME);
+        $app['config']->set('operations.directory', '../../../../' . self::TEST_FILE_DIRECTORY);
+        $app['config']->set('operations.table', self::TEST_TABLE_NAME);
         $app['config']->set('queue.default', 'database');
     }
 

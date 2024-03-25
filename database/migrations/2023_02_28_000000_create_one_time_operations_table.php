@@ -3,8 +3,8 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use TimoKoerber\LaravelOneTimeOperations\Models\Operation;
-use TimoKoerber\LaravelOneTimeOperations\OneTimeOperationManager;
+use EncoreDigitalGroup\LaravelOperations\Models\Operation;
+use EncoreDigitalGroup\LaravelOperations\LaravelOperationManager;
 
 class CreateOneTimeOperationsTable extends Migration
 {
@@ -12,7 +12,7 @@ class CreateOneTimeOperationsTable extends Migration
 
     public function __construct()
     {
-        $this->name = OneTimeOperationManager::getTableName();
+        $this->name = LaravelOperationManager::getTableName();
     }
 
     public function up()

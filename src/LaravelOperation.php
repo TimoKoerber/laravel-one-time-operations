@@ -1,8 +1,8 @@
 <?php
 
-namespace TimoKoerber\LaravelOneTimeOperations;
+namespace EncoreDigitalGroup\LaravelOperations;
 
-abstract class OneTimeOperation
+abstract class LaravelOperation
 {
     /**
      * Determine if the operation is being processed asynchronously.

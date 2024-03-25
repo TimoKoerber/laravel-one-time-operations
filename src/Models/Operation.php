@@ -1,11 +1,11 @@
 <?php
 
-namespace  TimoKoerber\LaravelOneTimeOperations\Models;
+namespace EncoreDigitalGroup\LaravelOperations\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use TimoKoerber\LaravelOneTimeOperations\Database\Factories\OperationFactory;
-use TimoKoerber\LaravelOneTimeOperations\OneTimeOperationManager;
+use EncoreDigitalGroup\LaravelOperations\Database\Factories\OperationFactory;
+use EncoreDigitalGroup\LaravelOperations\LaravelOperationManager;
 
 class Operation extends Model
 {
@@ -31,7 +31,7 @@ class Operation extends Model
     {
         parent::__construct($attributes);
 
-        $this->table = OneTimeOperationManager::getTableName();
+        $this->table = LaravelOperationManager::getTableName();
     }
 
     protected static function newFactory(): OperationFactory
@@ -50,6 +50,6 @@ class Operation extends Model
 
     public function getFilePathAttribute(): string
     {
-        return OneTimeOperationManager::pathToFileByName($this->name);
+        return LaravelOperationManager::pathToFileByName($this->name);
     }
 }

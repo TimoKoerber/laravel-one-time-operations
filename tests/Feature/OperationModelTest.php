@@ -1,9 +1,9 @@
 <?php
 
-namespace TimoKoerber\LaravelOneTimeOperations\Tests\Feature;
+namespace EncoreDigitalGroup\LaravelOperations\Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use TimoKoerber\LaravelOneTimeOperations\Models\Operation;
+use EncoreDigitalGroup\LaravelOperations\Models\Operation;
 
 class OperationModelTest extends OneTimeOperationCase
 {

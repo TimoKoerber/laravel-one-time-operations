@@ -1,12 +1,12 @@
 <?php
 
-namespace TimoKoerber\LaravelOneTimeOperations\Commands;
+namespace EncoreDigitalGroup\LaravelOperations\Commands;
 
 use Illuminate\Console\Command;
-use TimoKoerber\LaravelOneTimeOperations\Commands\Utils\ColoredOutput;
-use TimoKoerber\LaravelOneTimeOperations\OneTimeOperationManager;
+use EncoreDigitalGroup\LaravelOperations\Commands\Utils\ColoredOutput;
+use EncoreDigitalGroup\LaravelOperations\LaravelOperationManager;
 
-abstract class OneTimeOperationsCommand extends Command
+abstract class LaravelOperationsCommand extends Command
 {
     use ColoredOutput;
 
@@ -22,6 +22,6 @@ abstract class OneTimeOperationsCommand extends Command
     {
         parent::__construct();
 
-        $this->operationsDirectory = OneTimeOperationManager::getDirectoryPath();
+        $this->operationsDirectory = LaravelOperationManager::getDirectoryPath();
     }
 }

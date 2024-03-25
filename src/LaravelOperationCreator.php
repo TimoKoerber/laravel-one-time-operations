@@ -1,13 +1,13 @@
 <?php
 
-namespace TimoKoerber\LaravelOneTimeOperations;
+namespace EncoreDigitalGroup\LaravelOperations;
 
 use ErrorException;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 
-class OneTimeOperationCreator
+class LaravelOperationCreator
 {
     protected string $operationsDirectory;
 
@@ -19,19 +19,19 @@ class OneTimeOperationCreator
 
     public function __construct()
     {
-        $this->operationsDirectory = OneTimeOperationManager::getDirectoryPath();
+        $this->operationsDirectory = LaravelOperationManager::getDirectoryPath();
     }
 
     /**
      * @throws \Throwable
      */
-    public static function createOperationFile(string $name, bool $essential = false): OneTimeOperationFile
+    public static function createOperationFile(string $name, bool $essential = false): LaravelOperationFile
     {
         $instance = new self();
         $instance->setProvidedName($name);
         $instance->setEssential($essential);
 
-        return OneTimeOperationFile::make($instance->createFile());
+        return LaravelOperationFile::make($instance->createFile());
     }
 
     /**
@@ -52,7 +52,7 @@ class OneTimeOperationCreator
 
     protected function getPath(): string
     {
-        return $this->operationsDirectory.DIRECTORY_SEPARATOR.$this->getOperationName();
+        return $this->operationsDirectory . DIRECTORY_SEPARATOR . $this->getOperationName();
     }
 
     protected function getStubFilepath(): string
@@ -63,15 +63,15 @@ class OneTimeOperationCreator
         }
 
         if ($this->essential) {
-            return File::get(__DIR__.'/../stubs/one-time-operation-essential.stub');
+            return File::get(__DIR__ . '/../stubs/one-time-operation-essential.stub');
         }
 
-        return File::get(__DIR__.'/../stubs/one-time-operation.stub');
+        return File::get(__DIR__ . '/../stubs/one-time-operation.stub');
     }
 
     public function getOperationName(): string
     {
-        if (! $this->operationName) {
+        if (!$this->operationName) {
             $this->initOperationName();
         }
 
@@ -85,7 +85,7 @@ class OneTimeOperationCreator
 
     protected function initOperationName(): void
     {
-        $this->operationName = $this->getDatePrefix().'_'.Str::snake($this->providedName).'.php';
+        $this->operationName = $this->getDatePrefix() . '_' . Str::snake($this->providedName) . '.php';
     }
 
     protected function ensureDirectoryExists(): void

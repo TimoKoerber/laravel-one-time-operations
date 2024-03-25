@@ -1,13 +1,13 @@
 <?php
 
-namespace TimoKoerber\LaravelOneTimeOperations\Tests\Feature;
+namespace EncoreDigitalGroup\LaravelOperations\Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Str;
-use TimoKoerber\LaravelOneTimeOperations\Jobs\OneTimeOperationProcessJob;
-use TimoKoerber\LaravelOneTimeOperations\Models\Operation;
+use EncoreDigitalGroup\LaravelOperations\Jobs\LaravelOperationProcessJob;
+use EncoreDigitalGroup\LaravelOperations\Models\Operation;
 
 class OneTimeOperationCommandTest extends OneTimeOperationCase
 {
@@ -101,7 +101,7 @@ class OneTimeOperationCommandTest extends OneTimeOperationCase
 
         // operation was exectued - database entry and job was created
         $this->assertEquals(1, Operation::count());
-        Queue::assertPushed(OneTimeOperationProcessJob::class, function (OneTimeOperationProcessJob $job) {
+        Queue::assertPushed(LaravelOperationProcessJob::class, function (LaravelOperationProcessJob $job) {
             return $job->connection === null; // async
         });
 
@@ -118,7 +118,7 @@ class OneTimeOperationCommandTest extends OneTimeOperationCase
             ->doesntExpectOutputToContain('2015_10_21_072800_awesome_operation');
 
         // no more jobs were created
-        Queue::assertPushed(OneTimeOperationProcessJob::class, 1);
+        Queue::assertPushed(LaravelOperationProcessJob::class, 1);
 
         // re-run job explicitly, but cancel process
         $this->artisan('operations:process 2015_10_21_072800_awesome_operation')
@@ -135,7 +135,7 @@ class OneTimeOperationCommandTest extends OneTimeOperationCase
             ->expectsOutputToContain('Processing finished.');
 
         // another job was pushed to the queue
-        Queue::assertPushed(OneTimeOperationProcessJob::class, 2);
+        Queue::assertPushed(LaravelOperationProcessJob::class, 2);
 
         // another database entry was created
         $this->assertEquals(2, Operation::count());
@@ -169,7 +169,7 @@ class OneTimeOperationCommandTest extends OneTimeOperationCase
             ->expectsOutputToContain('2015_10_21_072800_foo_bar_operation');
 
         // Job was executed synchronously
-        Queue::assertPushed(OneTimeOperationProcessJob::class, function (OneTimeOperationProcessJob $job) {
+        Queue::assertPushed(LaravelOperationProcessJob::class, function (LaravelOperationProcessJob $job) {
             return $job->connection === 'sync';
         });
 
@@ -192,7 +192,7 @@ class OneTimeOperationCommandTest extends OneTimeOperationCase
         $this->artisan('operations:process')->assertSuccessful();
 
         // Job was executed synchronously
-        Queue::assertPushed(OneTimeOperationProcessJob::class, function (OneTimeOperationProcessJob $job) {
+        Queue::assertPushed(LaravelOperationProcessJob::class, function (LaravelOperationProcessJob $job) {
             return $job->operationName === '2015_10_21_072800_foo_bar_operation'
                 && $job->connection === 'sync' // sync
                 && $job->queue === null; // no queue
@@ -208,7 +208,7 @@ class OneTimeOperationCommandTest extends OneTimeOperationCase
             ->assertSuccessful();
 
         // Job was executed asynchronously
-        Queue::assertPushed(OneTimeOperationProcessJob::class, function (OneTimeOperationProcessJob $job) {
+        Queue::assertPushed(LaravelOperationProcessJob::class, function (LaravelOperationProcessJob $job) {
             return $job->operationName === '2015_10_21_072800_foo_bar_operation'
                 && $job->connection === null // async
                 && $job->queue === 'default'; // default queue
@@ -224,7 +224,7 @@ class OneTimeOperationCommandTest extends OneTimeOperationCase
             ->assertSuccessful();
 
         // Job was executed asynchronously on queue "foobar"
-        Queue::assertPushed(OneTimeOperationProcessJob::class, function (OneTimeOperationProcessJob $job) {
+        Queue::assertPushed(LaravelOperationProcessJob::class, function (LaravelOperationProcessJob $job) {
             return $job->operationName === '2015_10_21_072800_foo_bar_operation'
                 && $job->connection === null // async
                 && $job->queue === 'foobar'; // default queue
@@ -245,7 +245,7 @@ class OneTimeOperationCommandTest extends OneTimeOperationCase
         $this->artisan('operations:process')->assertSuccessful();
 
         // Job was executed synchronously
-        Queue::assertPushed(OneTimeOperationProcessJob::class, function (OneTimeOperationProcessJob $job) {
+        Queue::assertPushed(LaravelOperationProcessJob::class, function (LaravelOperationProcessJob $job) {
             return $job->operationName === '2015_10_21_072800_foo_bar_operation'
                 && $job->connection === null // async
                 && $job->queue === 'narfpuit'; // queue narfpuit
@@ -257,7 +257,7 @@ class OneTimeOperationCommandTest extends OneTimeOperationCase
             ->assertSuccessful();
 
         // Job was executed asynchronously on queue "foobar"
-        Queue::assertPushed(OneTimeOperationProcessJob::class, function (OneTimeOperationProcessJob $job) {
+        Queue::assertPushed(LaravelOperationProcessJob::class, function (LaravelOperationProcessJob $job) {
             return $job->operationName === '2015_10_21_072800_foo_bar_operation'
                 && $job->connection === null // async
                 && $job->queue === 'foobar'; // queue foobar
@@ -430,12 +430,12 @@ class OneTimeOperationCommandTest extends OneTimeOperationCase
 
     protected function filepath(string $filename): string
     {
-        return base_path(config('one-time-operations.directory')).DIRECTORY_SEPARATOR.$filename;
+        return base_path(config('operations.directory')) . DIRECTORY_SEPARATOR . $filename;
     }
 
     protected function tearDown(): void
     {
-        File::deleteDirectory(base_path(config('one-time-operations.directory')));
+        File::deleteDirectory(base_path(config('operations.directory')));
 
         parent::tearDown();
     }

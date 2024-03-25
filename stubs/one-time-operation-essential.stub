@@ -1,8 +1,8 @@
 <?php
 
-use TimoKoerber\LaravelOneTimeOperations\OneTimeOperation;
+use EncoreDigitalGroup\LaravelOperations\LaravelOperation;
 
-return new class extends OneTimeOperation
+return new class extends LaravelOperation
 {
     public function process(): void
     {
