@@ -1,0 +1,96 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Access to an undefined property EncoreDigitalGroup\\\\LaravelOperations\\\\Models\\\\Operation\\:\\:\\$name\\.$#"
+			count: 3
+			path: src/Commands/LaravelOperationShowCommand.php
+
+		-
+			message: "#^Access to an undefined property EncoreDigitalGroup\\\\LaravelOperations\\\\Models\\\\Operation\\:\\:\\$processed_at\\.$#"
+			count: 2
+			path: src/Commands/LaravelOperationShowCommand.php
+
+		-
+			message: "#^Parameter \\#2 \\$array of function array_map expects array, array\\|bool\\|string\\|null given\\.$#"
+			count: 1
+			path: src/Commands/LaravelOperationShowCommand.php
+
+		-
+			message: "#^Parameter \\#2 \\$array of function array_map expects array, array\\|string\\|true given\\.$#"
+			count: 1
+			path: src/Commands/LaravelOperationShowCommand.php
+
+		-
+			message: "#^Parameter \\#1 \\$name of static method EncoreDigitalGroup\\\\LaravelOperations\\\\LaravelOperationCreator\\:\\:createOperationFile\\(\\) expects string, array\\|bool\\|string\\|null given\\.$#"
+			count: 1
+			path: src/Commands/LaravelOperationsMakeCommand.php
+
+		-
+			message: "#^Parameter \\#2 \\$essential of static method EncoreDigitalGroup\\\\LaravelOperations\\\\LaravelOperationCreator\\:\\:createOperationFile\\(\\) expects bool, array\\|bool\\|string\\|null given\\.$#"
+			count: 1
+			path: src/Commands/LaravelOperationsMakeCommand.php
+
+		-
+			message: "#^Access to an undefined property EncoreDigitalGroup\\\\LaravelOperations\\\\Models\\\\Operation\\:\\:\\$name\\.$#"
+			count: 2
+			path: src/Commands/LaravelOperationsProcessCommand.php
+
+		-
+			message: "#^Method EncoreDigitalGroup\\\\LaravelOperations\\\\Commands\\\\LaravelOperationsProcessCommand\\:\\:dispatchOperationJob\\(\\) has no return type specified\\.$#"
+			count: 1
+			path: src/Commands/LaravelOperationsProcessCommand.php
+
+		-
+			message: "#^Method EncoreDigitalGroup\\\\LaravelOperations\\\\Commands\\\\LaravelOperationsProcessCommand\\:\\:testModeEnabled\\(\\) should return bool but returns array\\|bool\\|string\\|null\\.$#"
+			count: 1
+			path: src/Commands/LaravelOperationsProcessCommand.php
+
+		-
+			message: "#^Parameter \\#1 \\$providedOperationName of method EncoreDigitalGroup\\\\LaravelOperations\\\\Commands\\\\LaravelOperationsProcessCommand\\:\\:proccessSingleOperation\\(\\) expects string, array\\|string\\|true given\\.$#"
+			count: 1
+			path: src/Commands/LaravelOperationsProcessCommand.php
+
+		-
+			message: "#^Property EncoreDigitalGroup\\\\LaravelOperations\\\\Commands\\\\LaravelOperationsProcessCommand\\:\\:\\$queue \\(string\\|null\\) does not accept array\\|bool\\|string\\|null\\.$#"
+			count: 1
+			path: src/Commands/LaravelOperationsProcessCommand.php
+
+		-
+			message: "#^Property EncoreDigitalGroup\\\\LaravelOperations\\\\Commands\\\\LaravelOperationsProcessCommand\\:\\:\\$tags \\(array\\) does not accept array\\|bool\\|string\\|null\\.$#"
+			count: 1
+			path: src/Commands/LaravelOperationsProcessCommand.php
+
+		-
+			message: "#^Call to an undefined static method EncoreDigitalGroup\\\\LaravelOperations\\\\Models\\\\Operation\\:\\:whereName\\(\\)\\.$#"
+			count: 1
+			path: src/LaravelOperationFile.php
+
+		-
+			message: "#^Access to an undefined property EncoreDigitalGroup\\\\LaravelOperations\\\\Models\\\\Operation\\:\\:\\$name\\.$#"
+			count: 1
+			path: src/LaravelOperationManager.php
+
+		-
+			message: "#^Call to an undefined static method EncoreDigitalGroup\\\\LaravelOperations\\\\Models\\\\Operation\\:\\:whereName\\(\\)\\.$#"
+			count: 2
+			path: src/LaravelOperationManager.php
+
+		-
+			message: "#^Method EncoreDigitalGroup\\\\LaravelOperations\\\\LaravelOperationManager\\:\\:buildFilename\\(\\) has parameter \\$operationName with no type specified\\.$#"
+			count: 1
+			path: src/LaravelOperationManager.php
+
+		-
+			message: "#^Method EncoreDigitalGroup\\\\LaravelOperations\\\\LaravelOperationManager\\:\\:getAllOperationFiles\\(\\) should return Illuminate\\\\Support\\\\Collection&iterable\\<SplFileInfo\\> but returns Illuminate\\\\Support\\\\Collection\\<\\(int\\|string\\), EncoreDigitalGroup\\\\LaravelOperations\\\\LaravelOperationFile\\>\\.$#"
+			count: 1
+			path: src/LaravelOperationManager.php
+
+		-
+			message: "#^Access to an undefined property EncoreDigitalGroup\\\\LaravelOperations\\\\Models\\\\Operation\\:\\:\\$name\\.$#"
+			count: 1
+			path: src/Models/Operation.php
+
+		-
+			message: "#^Call to an undefined static method EncoreDigitalGroup\\\\LaravelOperations\\\\Models\\\\Operation\\:\\:firstOrCreate\\(\\)\\.$#"
+			count: 1
+			path: src/Models/Operation.php
