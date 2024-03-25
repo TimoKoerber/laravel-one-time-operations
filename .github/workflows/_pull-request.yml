@@ -18,11 +18,11 @@ jobs:
     needs: Duster
     name: RunLarastan
     uses: EncoreDigitalGroup/.github/.github/workflows/larastan.yml@main
-  # Test:
-  #   needs: Duster
-  #   name: Run Tests
-  #   uses: EncoreDigitalGroup/.github/.github/workflows/pest.yml@master
-  AutoMerge:
+  UnitTests:
     needs: StaticAnalysis
+    name: Run Tests
+    uses: EncoreDigitalGroup/.github/.github/workflows/phpunit.yml@main
+  AutoMerge:
+    needs: UnitTests
     name: AutoMerge
     uses: EncoreDigitalGroup/.github/.github/workflows/dependabot-auto-merge.yml@main
