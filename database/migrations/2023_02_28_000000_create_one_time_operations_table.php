@@ -1,10 +1,10 @@
 <?php
 
+use EncoreDigitalGroup\LaravelOperations\LaravelOperationManager;
+use EncoreDigitalGroup\LaravelOperations\Models\Operation;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use EncoreDigitalGroup\LaravelOperations\Models\Operation;
-use EncoreDigitalGroup\LaravelOperations\LaravelOperationManager;
 
 class CreateOneTimeOperationsTable extends Migration
 {

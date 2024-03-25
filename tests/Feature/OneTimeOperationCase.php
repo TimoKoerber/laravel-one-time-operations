@@ -2,11 +2,11 @@
 
 namespace EncoreDigitalGroup\LaravelOperations\Tests\Feature;
 
+use EncoreDigitalGroup\LaravelOperations\Providers\LaravelOperationsServiceProvider;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Queue;
 use Orchestra\Testbench\TestCase;
-use EncoreDigitalGroup\LaravelOperations\Providers\LaravelOperationsServiceProvider;
 
 abstract class OneTimeOperationCase extends TestCase
 {

@@ -2,18 +2,28 @@
 
 namespace EncoreDigitalGroup\LaravelOperations\Tests\Feature;
 
+use EncoreDigitalGroup\LaravelOperations\Jobs\LaravelOperationProcessJob;
+use EncoreDigitalGroup\LaravelOperations\Models\Operation;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Str;
-use EncoreDigitalGroup\LaravelOperations\Jobs\LaravelOperationProcessJob;
-use EncoreDigitalGroup\LaravelOperations\Models\Operation;
 
 class OneTimeOperationCommandTest extends OneTimeOperationCase
 {
     use RefreshDatabase;
 
-    public function test_make_command_with_attributes()
+    protected function tearDown(): void
+    {
+        File::deleteDirectory(base_path(config('operations.directory')));
+
+        parent::tearDown();
+    }
+
+    /**
+     * @test
+     */
+    public function make_command_with_attributes()
     {
         $filepath = $this->filepath('2015_10_21_072800_awesome_operation.php');
         File::delete($filepath);
@@ -34,7 +44,10 @@ class OneTimeOperationCommandTest extends OneTimeOperationCase
         $this->assertStringContainsString('public function process(): void', $fileContent);
     }
 
-    public function test_make_command_without_attributes()
+    /**
+     * @test
+     */
+    public function make_command_without_attributes()
     {
         $filepath = $this->filepath('2015_10_21_072800_awesome_operation.php');
         File::delete($filepath);
@@ -53,7 +66,10 @@ class OneTimeOperationCommandTest extends OneTimeOperationCase
         $this->assertStringNotContainsString('protected ?string $tag = null;', $fileContent);
     }
 
-    public function test_make_command_without_attributes_shortcut()
+    /**
+     * @test
+     */
+    public function make_command_without_attributes_shortcut()
     {
         $filepath = $this->filepath('2015_10_21_072800_awesome_operation.php');
         File::delete($filepath);
@@ -147,7 +163,10 @@ class OneTimeOperationCommandTest extends OneTimeOperationCase
         $this->assertEquals('async', $operation->dispatched);
     }
 
-    public function test_sync_processing()
+    /**
+     * @test
+     */
+    public function sync_processing()
     {
         $filepath = $this->filepath('2015_10_21_072800_foo_bar_operation.php');
         File::delete($filepath);
@@ -178,7 +197,10 @@ class OneTimeOperationCommandTest extends OneTimeOperationCase
         $this->assertEquals('sync', $operation->dispatched);
     }
 
-    public function test_sync_processing_with_file_attribute()
+    /**
+     * @test
+     */
+    public function sync_processing_with_file_attribute()
     {
         Queue::assertNothingPushed();
 
@@ -231,7 +253,10 @@ class OneTimeOperationCommandTest extends OneTimeOperationCase
         });
     }
 
-    public function test_processing_with_queue()
+    /**
+     * @test
+     */
+    public function processing_with_queue()
     {
         Queue::assertNothingPushed();
 
@@ -264,7 +289,10 @@ class OneTimeOperationCommandTest extends OneTimeOperationCase
         });
     }
 
-    public function test_processing_with_test_flag()
+    /**
+     * @test
+     */
+    public function processing_with_test_flag()
     {
         // no database entry yet
         $this->assertEquals(0, Operation::count());
@@ -284,7 +312,10 @@ class OneTimeOperationCommandTest extends OneTimeOperationCase
         $this->assertEquals(0, Operation::count());
     }
 
-    public function test_processing_with_tags()
+    /**
+     * @test
+     */
+    public function processing_with_tags()
     {
         // create files
         $this->artisan('operations:make FooBarOperation')->assertSuccessful();
@@ -359,7 +390,10 @@ class OneTimeOperationCommandTest extends OneTimeOperationCase
             ->assertSuccessful();
     }
 
-    public function test_operations_show_command()
+    /**
+     * @test
+     */
+    public function operations_show_command()
     {
         // no files found
         $this->artisan('operations:show')
@@ -431,13 +465,6 @@ class OneTimeOperationCommandTest extends OneTimeOperationCase
     protected function filepath(string $filename): string
     {
         return base_path(config('operations.directory')) . DIRECTORY_SEPARATOR . $filename;
-    }
-
-    protected function tearDown(): void
-    {
-        File::deleteDirectory(base_path(config('operations.directory')));
-
-        parent::tearDown();
     }
 
     protected function editFile(string $filename, string $search, string $replace)

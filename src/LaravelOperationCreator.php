@@ -6,6 +6,8 @@ use ErrorException;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
+use SplFileInfo;
+use Throwable;
 
 class LaravelOperationCreator
 {
@@ -23,11 +25,11 @@ class LaravelOperationCreator
     }
 
     /**
-     * @throws \Throwable
+     * @throws Throwable
      */
     public static function createOperationFile(string $name, bool $essential = false): LaravelOperationFile
     {
-        $instance = new self();
+        $instance = new self;
         $instance->setProvidedName($name);
         $instance->setEssential($essential);
 
@@ -35,9 +37,9 @@ class LaravelOperationCreator
     }
 
     /**
-     * @throws \Throwable
+     * @throws Throwable
      */
-    public function createFile(): \SplFileInfo
+    public function createFile(): SplFileInfo
     {
         $path = $this->getPath();
         $stub = $this->getStubFilepath();
@@ -47,7 +49,26 @@ class LaravelOperationCreator
 
         File::put($path, $stub);
 
-        return new \SplFileInfo($path);
+        return new SplFileInfo($path);
+    }
+
+    public function getOperationName(): string
+    {
+        if (! $this->operationName) {
+            $this->initOperationName();
+        }
+
+        return $this->operationName;
+    }
+
+    public function setProvidedName(string $providedName): void
+    {
+        $this->providedName = $providedName;
+    }
+
+    public function setEssential(bool $essential): void
+    {
+        $this->essential = $essential;
     }
 
     protected function getPath(): string
@@ -69,15 +90,6 @@ class LaravelOperationCreator
         return File::get(__DIR__ . '/../stubs/one-time-operation.stub');
     }
 
-    public function getOperationName(): string
-    {
-        if (!$this->operationName) {
-            $this->initOperationName();
-        }
-
-        return $this->operationName;
-    }
-
     protected function getDatePrefix(): string
     {
         return Carbon::now()->format('Y_m_d_His');
@@ -91,15 +103,5 @@ class LaravelOperationCreator
     protected function ensureDirectoryExists(): void
     {
         File::ensureDirectoryExists($this->operationsDirectory);
-    }
-
-    public function setProvidedName(string $providedName): void
-    {
-        $this->providedName = $providedName;
-    }
-
-    public function setEssential(bool $essential): void
-    {
-        $this->essential = $essential;
     }
 }

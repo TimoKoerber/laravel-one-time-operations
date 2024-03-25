@@ -2,8 +2,8 @@
 
 namespace EncoreDigitalGroup\LaravelOperations\Commands;
 
-use Throwable;
 use EncoreDigitalGroup\LaravelOperations\LaravelOperationCreator;
+use Throwable;
 
 class LaravelOperationsMakeCommand extends LaravelOperationsCommand
 {

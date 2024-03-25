@@ -2,20 +2,20 @@
 
 namespace EncoreDigitalGroup\LaravelOperations\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use EncoreDigitalGroup\LaravelOperations\Database\Factories\OperationFactory;
 use EncoreDigitalGroup\LaravelOperations\LaravelOperationManager;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Operation extends Model
 {
     use HasFactory;
 
-    public $timestamps = false;
-
     public const DISPATCHED_ASYNC = 'async';
 
     public const DISPATCHED_SYNC = 'sync';
+
+    public $timestamps = false;
 
     protected $fillable = [
         'name',
@@ -34,11 +34,6 @@ class Operation extends Model
         $this->table = LaravelOperationManager::getTableName();
     }
 
-    protected static function newFactory(): OperationFactory
-    {
-        return new OperationFactory();
-    }
-
     public static function storeOperation(string $operation, bool $async): self
     {
         return self::firstOrCreate([
@@ -46,6 +41,11 @@ class Operation extends Model
             'dispatched' => $async ? self::DISPATCHED_ASYNC : self::DISPATCHED_SYNC,
             'processed_at' => now(),
         ]);
+    }
+
+    protected static function newFactory(): OperationFactory
+    {
+        return new OperationFactory;
     }
 
     public function getFilePathAttribute(): string

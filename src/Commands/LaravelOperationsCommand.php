@@ -2,9 +2,9 @@
 
 namespace EncoreDigitalGroup\LaravelOperations\Commands;
 
-use Illuminate\Console\Command;
 use EncoreDigitalGroup\LaravelOperations\Commands\Utils\ColoredOutput;
 use EncoreDigitalGroup\LaravelOperations\LaravelOperationManager;
+use Illuminate\Console\Command;
 
 abstract class LaravelOperationsCommand extends Command
 {

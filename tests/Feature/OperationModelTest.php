@@ -2,8 +2,8 @@
 
 namespace EncoreDigitalGroup\LaravelOperations\Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use EncoreDigitalGroup\LaravelOperations\Models\Operation;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class OperationModelTest extends OneTimeOperationCase
 {

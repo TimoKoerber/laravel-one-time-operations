@@ -2,14 +2,14 @@
 
 namespace EncoreDigitalGroup\LaravelOperations\Tests\Feature;
 
+use EncoreDigitalGroup\LaravelOperations\LaravelOperation;
+use EncoreDigitalGroup\LaravelOperations\LaravelOperationFile;
+use EncoreDigitalGroup\LaravelOperations\LaravelOperationManager;
+use EncoreDigitalGroup\LaravelOperations\Models\Operation;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
 use SplFileInfo;
-use EncoreDigitalGroup\LaravelOperations\Models\Operation;
-use EncoreDigitalGroup\LaravelOperations\LaravelOperation;
-use EncoreDigitalGroup\LaravelOperations\LaravelOperationFile;
-use EncoreDigitalGroup\LaravelOperations\LaravelOperationManager;
 
 class OneTimeOperationManagerTest extends OneTimeOperationCase
 {
@@ -27,35 +27,53 @@ class OneTimeOperationManagerTest extends OneTimeOperationCase
         $this->deleteFileDirectory();
     }
 
-    public function test_get_directory_path()
+    /**
+     * @test
+     */
+    public function get_directory_path()
     {
         $this->assertStringEndsWith('tests/files/', LaravelOperationManager::getDirectoryPath()); // path was set by self::mockDirectory()
     }
 
-    public function test_get_path_to_file_by_name()
+    /**
+     * @test
+     */
+    public function get_path_to_file_by_name()
     {
         $this->assertStringEndsWith('/tests/files/narfpuit.php', LaravelOperationManager::pathToFileByName('narfpuit'));
         $this->assertStringEndsWith('/tests/files/20220101_223355_foobar.php', LaravelOperationManager::pathToFileByName('20220101_223355_foobar'));
     }
 
-    public function test_build_filename()
+    /**
+     * @test
+     */
+    public function build_filename()
     {
         $this->assertEquals('foo.php', LaravelOperationManager::buildFilename('foo'));
         $this->assertEquals('bar.php', LaravelOperationManager::buildFilename('bar'));
     }
 
-    public function test_get_operation_name_from_filename()
+    /**
+     * @test
+     */
+    public function get_operation_name_from_filename()
     {
         $this->assertEquals('20220223_foo', LaravelOperationManager::getOperationNameFromFilename('20220223_foo.php'));
         $this->assertEquals('20220223_bar', LaravelOperationManager::getOperationNameFromFilename('20220223_bar.php'));
     }
 
-    public function test_get_table_name()
+    /**
+     * @test
+     */
+    public function get_table_name()
     {
         $this->assertEquals('operations', LaravelOperationManager::getTableName()); // was set in parent::mockTable();
     }
 
-    public function test_get_operation_file_by_model()
+    /**
+     * @test
+     */
+    public function get_operation_file_by_model()
     {
         $operationModel = Operation::factory()->make(['name' => self::TEST_OPERATION_NAME]);
 
@@ -66,7 +84,10 @@ class OneTimeOperationManagerTest extends OneTimeOperationCase
         $this->assertEquals($operationModel->name, $operationFile->getOperationName());
     }
 
-    public function test_get_operation_file_by_model_throws_exception()
+    /**
+     * @test
+     */
+    public function get_operation_file_by_model_throws_exception()
     {
         $operationModel = Operation::factory()->make(['name' => 'file_does_not_exist']); // matching file does noe exist
 
@@ -75,21 +96,30 @@ class OneTimeOperationManagerTest extends OneTimeOperationCase
         LaravelOperationManager::getOperationFileByModel($operationModel);
     }
 
-    public function test_get_class_object_by_name_missing_file()
+    /**
+     * @test
+     */
+    public function get_class_object_by_name_missing_file()
     {
         $this->expectException(FileNotFoundException::class);
 
         LaravelOperationManager::getClassObjectByName('file_does_not_exist');
     }
 
-    public function test_get_class_object_by_name()
+    /**
+     * @test
+     */
+    public function get_class_object_by_name()
     {
         $operationClass = LaravelOperationManager::getClassObjectByName(self::TEST_OPERATION_NAME);
 
         $this->assertInstanceOf(LaravelOperation::class, $operationClass);
     }
 
-    public function test_get_all_operation_files()
+    /**
+     * @test
+     */
+    public function get_all_operation_files()
     {
         $files = LaravelOperationManager::getAllFiles();
 
@@ -108,7 +138,10 @@ class OneTimeOperationManagerTest extends OneTimeOperationCase
         $this->assertEquals('xxxx_xx_xx_xxxxxx_narf_puit.php', $secondFile->getBasename());
     }
 
-    public function test_get_unprocessed_files()
+    /**
+     * @test
+     */
+    public function get_unprocessed_files()
     {
         $files = LaravelOperationManager::getUnprocessedFiles();
 
@@ -133,7 +166,10 @@ class OneTimeOperationManagerTest extends OneTimeOperationCase
         $this->assertCount(0, $files);
     }
 
-    public function test_get_unprocessed_operation_files()
+    /**
+     * @test
+     */
+    public function get_unprocessed_operation_files()
     {
         $files = LaravelOperationManager::getUnprocessedOperationFiles();
 

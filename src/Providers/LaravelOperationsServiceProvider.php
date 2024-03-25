@@ -2,10 +2,10 @@
 
 namespace EncoreDigitalGroup\LaravelOperations\Providers;
 
-use Illuminate\Support\ServiceProvider;
 use EncoreDigitalGroup\LaravelOperations\Commands\LaravelOperationShowCommand;
 use EncoreDigitalGroup\LaravelOperations\Commands\LaravelOperationsMakeCommand;
 use EncoreDigitalGroup\LaravelOperations\Commands\LaravelOperationsProcessCommand;
+use Illuminate\Support\ServiceProvider;
 
 class LaravelOperationsServiceProvider extends ServiceProvider
 {

@@ -2,11 +2,11 @@
 
 namespace EncoreDigitalGroup\LaravelOperations\Tests\Feature;
 
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\File;
 use EncoreDigitalGroup\LaravelOperations\LaravelOperation;
 use EncoreDigitalGroup\LaravelOperations\LaravelOperationCreator;
 use EncoreDigitalGroup\LaravelOperations\LaravelOperationFile;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\File;
 
 class OneTimeOperationCreatorTest extends OneTimeOperationCase
 {

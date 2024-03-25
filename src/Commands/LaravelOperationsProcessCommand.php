@@ -2,13 +2,14 @@
 
 namespace EncoreDigitalGroup\LaravelOperations\Commands;
 
+use EncoreDigitalGroup\LaravelOperations\Jobs\LaravelOperationProcessJob;
+use EncoreDigitalGroup\LaravelOperations\LaravelOperationFile;
+use EncoreDigitalGroup\LaravelOperations\LaravelOperationManager;
+use EncoreDigitalGroup\LaravelOperations\Models\Operation;
 use Illuminate\Contracts\Console\Isolatable;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use EncoreDigitalGroup\LaravelOperations\Jobs\LaravelOperationProcessJob;
-use EncoreDigitalGroup\LaravelOperations\Models\Operation;
-use EncoreDigitalGroup\LaravelOperations\LaravelOperationFile;
-use EncoreDigitalGroup\LaravelOperations\LaravelOperationManager;
+use Throwable;
 
 class LaravelOperationsProcessCommand extends LaravelOperationsCommand implements Isolatable
 {
@@ -34,18 +35,18 @@ class LaravelOperationsProcessCommand extends LaravelOperationsCommand implement
     {
         $this->displayTestmodeWarning();
 
-        $this->forceAsync = (bool)$this->option('async');
-        $this->forceSync = (bool)$this->option('sync');
+        $this->forceAsync = (bool) $this->option('async');
+        $this->forceSync = (bool) $this->option('sync');
         $this->queue = $this->option('queue');
         $this->tags = $this->option('tag');
 
-        if (!$this->tagOptionsAreValid()) {
+        if (! $this->tagOptionsAreValid()) {
             $this->components->error('Abort! Do not provide empty tags!');
 
             return self::FAILURE;
         }
 
-        if (!$this->syncOptionsAreValid()) {
+        if (! $this->syncOptionsAreValid()) {
             $this->components->error('Abort! Process either with --sync or --async.');
 
             return self::FAILURE;
@@ -70,7 +71,7 @@ class LaravelOperationsProcessCommand extends LaravelOperationsCommand implement
             $operationsFile = LaravelOperationManager::getOperationFileByName($providedOperationName);
 
             return $this->processOperationFile($operationsFile);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $this->components->error($e->getMessage());
 
             return self::FAILURE;
@@ -92,7 +93,7 @@ class LaravelOperationsProcessCommand extends LaravelOperationsCommand implement
 
     protected function processOperationModel(Operation $operationModel): int
     {
-        if (!$this->components->confirm('Operation was processed before. Process it again?')) {
+        if (! $this->components->confirm('Operation was processed before. Process it again?')) {
             $this->components->info('Operation aborted');
 
             return self::SUCCESS;
@@ -228,6 +229,6 @@ class LaravelOperationsProcessCommand extends LaravelOperationsCommand implement
     protected function syncOptionsAreValid(): bool
     {
         // do not use both options at the same time
-        return !($this->forceAsync && $this->forceSync);
+        return ! ($this->forceAsync && $this->forceSync);
     }
 }

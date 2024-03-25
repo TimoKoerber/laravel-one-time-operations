@@ -2,10 +2,10 @@
 
 namespace EncoreDigitalGroup\LaravelOperations\Database\Factories;
 
+use EncoreDigitalGroup\LaravelOperations\Models\Operation;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use EncoreDigitalGroup\LaravelOperations\Models\Operation;
 
 class OperationFactory extends Factory
 {
