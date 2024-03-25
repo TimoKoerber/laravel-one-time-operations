@@ -33,6 +33,9 @@
     "orchestra/testbench": "^8.22",
     "phpunit/phpunit": "^9.4"
   },
+  "replace": {
+    "timokoerber/laravel-one-time-operations": "*"
+  },
   "minimum-stability": "stable",
   "prefer-stable": true,
   "autoload": {
