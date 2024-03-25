@@ -1,0 +1,11 @@
+parameters:
+    level: 8
+    paths:
+        - src
+    reportUnmatchedIgnoredErrors: false
+    checkMissingIterableValueType: false
+    checkGenericClassInNonGenericObjectType: false
+    checkDynamicProperties: false
+    checkTooWideReturnTypesInProtectedAndPublicMethods: false
+    ignoreErrors:
+        - '#PHPDoc tag .+ #'

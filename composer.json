@@ -1,70 +1,71 @@
 {
-  "name": "encoredigitalgroup/laravel-operations",
-  "description": "Run operations once after deployment - just like you do it with migrations!",
-  "keywords": [
-    "laravel",
-    "deployment",
-    "migrations",
-    "operations",
-    "jobs"
-  ],
-  "license": "MIT",
-  "authors": [
-    {
-      "name": "timo.koerber",
-      "email": "koerber.timo@gmail.com",
-      "homepage": "https://www.timokoerber.com",
-      "role": "Original Developer"
-    },
-    {
-      "name": "Encore Digital Group",
-      "email": "opensource@encoredigitalgroup.com",
-      "homepage": "https://encoredigitalgroup.com",
-      "role": "Fork Developer"
-    }
-  ],
-  "homepage": "https://github.com/EncoreDigitalGroup/laravel-operations",
-  "require": {
-    "php": "^8.2",
-    "illuminate/contracts": "^10.0|^11.0",
-    "illuminate/support": "^10.0|^11.0"
-  },
-  "require-dev": {
-    "orchestra/testbench": "^8.22",
-    "phpunit/phpunit": "^9.4"
-  },
-  "replace": {
-    "timokoerber/laravel-one-time-operations": "*"
-  },
-  "minimum-stability": "stable",
-  "prefer-stable": true,
-  "autoload": {
-    "psr-4": {
-      "EncoreDigitalGroup\\LaravelOperations\\": "src/",
-      "EncoreDigitalGroup\\LaravelOperations\\Database\\Factories\\": "database/factories/"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "EncoreDigitalGroup\\LaravelOperations\\Tests\\": "tests",
-      "EncoreDigitalGroup\\LaravelOperations\\Tests\\Feature\\": "tests/Feature"
-    }
-  },
-  "scripts": {
-    "post-autoload-dump": [
-      "@php vendor/bin/testbench package:discover --ansi"
+    "name": "encoredigitalgroup/laravel-operations",
+    "description": "Run operations once after deployment - just like you do it with migrations!",
+    "keywords": [
+        "laravel",
+        "deployment",
+        "migrations",
+        "operations",
+        "jobs"
     ],
-    "test": "./vendor/bin/phpunit",
-    "test-coverage": "./vendor/bin/phpunit --coverage-html coverage"
-  },
-  "config": {
-    "sort-packages": true
-  },
-  "extra": {
-    "laravel": {
-      "providers": [
-        "EncoreDigitalGroup\\LaravelOperations\\Tests\\Feature\\LaravelOperationsServiceProvider"
-      ]
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "timo.koerber",
+            "email": "koerber.timo@gmail.com",
+            "homepage": "https://www.timokoerber.com",
+            "role": "Original Developer"
+        },
+        {
+            "name": "Encore Digital Group",
+            "email": "opensource@encoredigitalgroup.com",
+            "homepage": "https://encoredigitalgroup.com",
+            "role": "Fork Developer"
+        }
+    ],
+    "homepage": "https://github.com/EncoreDigitalGroup/laravel-operations",
+    "require": {
+        "php": "^8.2",
+        "illuminate/contracts": "^10.0|^11.0",
+        "illuminate/support": "^10.0|^11.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^8.22",
+        "phpstan/phpstan": "*",
+        "phpunit/phpunit": "^9.4"
+    },
+    "replace": {
+        "timokoerber/laravel-one-time-operations": "*"
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "autoload": {
+        "psr-4": {
+            "EncoreDigitalGroup\\LaravelOperations\\": "src/",
+            "EncoreDigitalGroup\\LaravelOperations\\Database\\Factories\\": "database/factories/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "EncoreDigitalGroup\\LaravelOperations\\Tests\\": "tests",
+            "EncoreDigitalGroup\\LaravelOperations\\Tests\\Feature\\": "tests/Feature"
+        }
+    },
+    "scripts": {
+        "post-autoload-dump": [
+            "@php vendor/bin/testbench package:discover --ansi"
+        ],
+        "test": "./vendor/bin/phpunit",
+        "test-coverage": "./vendor/bin/phpunit --coverage-html coverage"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "EncoreDigitalGroup\\LaravelOperations\\Tests\\Feature\\LaravelOperationsServiceProvider"
+            ]
+        }
     }
-  }
 }
