@@ -30,7 +30,7 @@
         "illuminate/support": "^10.0|^11.0"
     },
     "require-dev": {
-        "orchestra/testbench": "^8.22",
+        "orchestra/testbench": "^9.0",
         "phpstan/phpstan": "^1.10",
         "phpunit/phpunit": "^10.5"
     },
