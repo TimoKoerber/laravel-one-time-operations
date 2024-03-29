@@ -14,18 +14,21 @@ jobs:
         permissions:
             contents: write
             pull-requests: write
+
     StaticAnalysis:
         needs: Duster
         name: RunLarastan
         uses: EncoreDigitalGroup/.github/.github/workflows/larastan.yml@main
         with:
             path: 'src/'
+
     UnitTests:
         needs: StaticAnalysis
         name: UnitTests
         uses: EncoreDigitalGroup/.github/.github/workflows/pest.yml@main
         with:
             phpVersion: '8.3'
+
     AutoMerge:
         needs: UnitTests
         name: AutoMerge
