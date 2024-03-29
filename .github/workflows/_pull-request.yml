@@ -10,7 +10,7 @@ permissions:
 jobs:
     Duster:
         name: Duster
-        uses: EncoreDigitalGroup/.github/.github/workflows/duster-fix.yml@main
+        uses: EncoreDigitalGroup/.github/.github/workflows/duster-fix-blame.yml@main
         permissions:
             contents: write
             pull-requests: write
@@ -22,8 +22,10 @@ jobs:
             path: 'src/'
     UnitTests:
         needs: StaticAnalysis
-        name: Run Tests
-        uses: EncoreDigitalGroup/.github/.github/workflows/phpunit.yml@main
+        name: UnitTests
+        uses: EncoreDigitalGroup/.github/.github/workflows/pest.yml@main
+        with:
+            phpVersion: '8.3'
     AutoMerge:
         needs: UnitTests
         name: AutoMerge

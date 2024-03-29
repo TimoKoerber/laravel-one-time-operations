@@ -31,8 +31,9 @@
     },
     "require-dev": {
         "orchestra/testbench": "^9.0",
-        "phpstan/phpstan": "^1.10",
-        "phpunit/phpunit": "^10.5"
+        "pestphp/pest": "^2.34",
+        "pestphp/pest-plugin-drift": "^2.6",
+        "phpstan/phpstan": "^1.10"
     },
     "replace": {
         "timokoerber/laravel-one-time-operations": "*"
@@ -55,11 +56,14 @@
         "post-autoload-dump": [
             "@php vendor/bin/testbench package:discover --ansi"
         ],
-        "test": "./vendor/bin/phpunit",
-        "test-coverage": "./vendor/bin/phpunit --coverage-html coverage"
+        "test": "./vendor/bin/pest",
+        "coverage": "./vendor/bin/pest --coverage"
     },
     "config": {
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
     },
     "extra": {
         "laravel": {

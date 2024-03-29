@@ -1,184 +1,128 @@
 <?php
 
-namespace EncoreDigitalGroup\LaravelOperations\Tests\Feature;
-
+//uses(\EncoreDigitalGroup\LaravelOperations\Tests\Feature\OneTimeOperationCase::class);
 use EncoreDigitalGroup\LaravelOperations\LaravelOperation;
 use EncoreDigitalGroup\LaravelOperations\LaravelOperationFile;
 use EncoreDigitalGroup\LaravelOperations\LaravelOperationManager;
 use EncoreDigitalGroup\LaravelOperations\Models\Operation;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
-use SplFileInfo;
 
-class OneTimeOperationManagerTest extends OneTimeOperationCase
-{
-    use RefreshDatabase;
+uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-    protected function setUp(): void
-    {
-        parent::setUp();
+beforeEach(function () {
+    $this->mockFileDirectory();
+});
 
-        $this->mockFileDirectory();
-    }
+afterEach(function () {
+    $this->deleteFileDirectory();
+});
 
-    protected function tearDown(): void
-    {
-        $this->deleteFileDirectory();
-    }
+test('get directory path', function () {
+    expect(LaravelOperationManager::getDirectoryPath())->toEndWith('tests/files/');
+    // path was set by self::mockDirectory()
+});
 
-    /**
-     * @test
-     */
-    public function get_directory_path()
-    {
-        $this->assertStringEndsWith('tests/files/', LaravelOperationManager::getDirectoryPath()); // path was set by self::mockDirectory()
-    }
+test('get path to file by name', function () {
+    expect(LaravelOperationManager::pathToFileByName('narfpuit'))->toEndWith('/tests/files/narfpuit.php')
+        ->and(LaravelOperationManager::pathToFileByName('20220101_223355_foobar'))->toEndWith('/tests/files/20220101_223355_foobar.php');
+});
 
-    /**
-     * @test
-     */
-    public function get_path_to_file_by_name()
-    {
-        $this->assertStringEndsWith('/tests/files/narfpuit.php', LaravelOperationManager::pathToFileByName('narfpuit'));
-        $this->assertStringEndsWith('/tests/files/20220101_223355_foobar.php', LaravelOperationManager::pathToFileByName('20220101_223355_foobar'));
-    }
+test('build filename', function () {
+    expect(LaravelOperationManager::buildFilename('foo'))->toEqual('foo.php')
+        ->and(LaravelOperationManager::buildFilename('bar'))->toEqual('bar.php');
+});
 
-    /**
-     * @test
-     */
-    public function build_filename()
-    {
-        $this->assertEquals('foo.php', LaravelOperationManager::buildFilename('foo'));
-        $this->assertEquals('bar.php', LaravelOperationManager::buildFilename('bar'));
-    }
+test('get operation name from filename', function () {
+    expect(LaravelOperationManager::getOperationNameFromFilename('20220223_foo.php'))->toEqual('20220223_foo')
+        ->and(LaravelOperationManager::getOperationNameFromFilename('20220223_bar.php'))->toEqual('20220223_bar');
+});
 
-    /**
-     * @test
-     */
-    public function get_operation_name_from_filename()
-    {
-        $this->assertEquals('20220223_foo', LaravelOperationManager::getOperationNameFromFilename('20220223_foo.php'));
-        $this->assertEquals('20220223_bar', LaravelOperationManager::getOperationNameFromFilename('20220223_bar.php'));
-    }
+test('get table name', function () {
+    expect(LaravelOperationManager::getTableName())->toEqual('operations');
+    // was set in parent::mockTable();
+});
 
-    /**
-     * @test
-     */
-    public function get_table_name()
-    {
-        $this->assertEquals('operations', LaravelOperationManager::getTableName()); // was set in parent::mockTable();
-    }
+test('get operation file by model', function () {
+    $operationModel = Operation::factory()->make(['name' => TEST_OPERATION_NAME]);
 
-    /**
-     * @test
-     */
-    public function get_operation_file_by_model()
-    {
-        $operationModel = Operation::factory()->make(['name' => self::TEST_OPERATION_NAME]);
+    $operationFile = LaravelOperationManager::getOperationFileByModel($operationModel);
 
-        $operationFile = LaravelOperationManager::getOperationFileByModel($operationModel);
+    expect($operationFile)->toBeInstanceOf(LaravelOperationFile::class)
+        ->and($operationFile->getClassObject())->toBeInstanceOf(LaravelOperation::class)
+        ->and($operationFile->getOperationName())->toEqual($operationModel->name);
+});
 
-        $this->assertInstanceOf(LaravelOperationFile::class, $operationFile);
-        $this->assertInstanceOf(LaravelOperation::class, $operationFile->getClassObject());
-        $this->assertEquals($operationModel->name, $operationFile->getOperationName());
-    }
+test('get operation file by model throws exception', function () {
+    $operationModel = Operation::factory()->make(['name' => 'file_does_not_exist']);
 
-    /**
-     * @test
-     */
-    public function get_operation_file_by_model_throws_exception()
-    {
-        $operationModel = Operation::factory()->make(['name' => 'file_does_not_exist']); // matching file does noe exist
+    // matching file does noe exist
+    $this->expectException(FileNotFoundException::class);
 
-        $this->expectException(FileNotFoundException::class);
+    LaravelOperationManager::getOperationFileByModel($operationModel);
+});
 
-        LaravelOperationManager::getOperationFileByModel($operationModel);
-    }
+test('get class object by name missing file', function () {
+    $this->expectException(FileNotFoundException::class);
 
-    /**
-     * @test
-     */
-    public function get_class_object_by_name_missing_file()
-    {
-        $this->expectException(FileNotFoundException::class);
+    LaravelOperationManager::getClassObjectByName('file_does_not_exist');
+});
 
-        LaravelOperationManager::getClassObjectByName('file_does_not_exist');
-    }
+test('get class object by name', function () {
+    $operationClass = LaravelOperationManager::getClassObjectByName(TEST_OPERATION_NAME);
 
-    /**
-     * @test
-     */
-    public function get_class_object_by_name()
-    {
-        $operationClass = LaravelOperationManager::getClassObjectByName(self::TEST_OPERATION_NAME);
+    expect($operationClass)->toBeInstanceOf(LaravelOperation::class);
+});
 
-        $this->assertInstanceOf(LaravelOperation::class, $operationClass);
-    }
+test('get all operation files', function () {
+    $files = LaravelOperationManager::getAllFiles();
 
-    /**
-     * @test
-     */
-    public function get_all_operation_files()
-    {
-        $files = LaravelOperationManager::getAllFiles();
+    /** @var SplFileInfo $firstFile */
+    $firstFile = $files->first();
 
-        /** @var SplFileInfo $firstFile */
-        $firstFile = $files->first();
-        /** @var SplFileInfo $secondFile */
-        $secondFile = $files->last();
+    /** @var SplFileInfo $secondFile */
+    $secondFile = $files->last();
 
-        $this->assertInstanceOf(Collection::class, $files);
-        $this->assertCount(2, $files);
+    expect($files)->toBeInstanceOf(Collection::class)
+        ->and($files)->toHaveCount(2)
+        ->and($firstFile)->toBeInstanceOf(SplFileInfo::class)
+        ->and($firstFile->getBasename())->toEqual('xxxx_xx_xx_xxxxxx_foo_bar.php')
+        ->and($secondFile)->toBeInstanceOf(SplFileInfo::class)
+        ->and($secondFile->getBasename())->toEqual('xxxx_xx_xx_xxxxxx_narf_puit.php');
 
-        $this->assertInstanceOf(SplFileInfo::class, $firstFile);
-        $this->assertEquals('xxxx_xx_xx_xxxxxx_foo_bar.php', $firstFile->getBasename());
+});
 
-        $this->assertInstanceOf(SplFileInfo::class, $secondFile);
-        $this->assertEquals('xxxx_xx_xx_xxxxxx_narf_puit.php', $secondFile->getBasename());
-    }
+test('get unprocessed files', function () {
+    $files = LaravelOperationManager::getUnprocessedFiles();
 
-    /**
-     * @test
-     */
-    public function get_unprocessed_files()
-    {
-        $files = LaravelOperationManager::getUnprocessedFiles();
+    /** @var SplFileInfo $firstFile */
+    $firstFile = $files->first();
 
-        /** @var SplFileInfo $firstFile */
-        $firstFile = $files->first();
+    expect($files)->toBeInstanceOf(Collection::class)
+        ->and($files)->toHaveCount(2)
+        ->and($firstFile)->toBeInstanceOf(SplFileInfo::class);
 
-        $this->assertInstanceOf(Collection::class, $files);
-        $this->assertCount(2, $files);
+    // create entry for file #1 -> file is processed
+    Operation::storeOperation('xxxx_xx_xx_xxxxxx_foo_bar', true);
 
-        $this->assertInstanceOf(SplFileInfo::class, $firstFile);
+    $files = LaravelOperationManager::getUnprocessedFiles();
+    expect($files)->toHaveCount(1);
 
-        // create entry for file #1 -> file is processed
-        Operation::storeOperation('xxxx_xx_xx_xxxxxx_foo_bar', true);
+    // create entry for file #2 -> file is processed
+    Operation::storeOperation('xxxx_xx_xx_xxxxxx_narf_puit', false);
 
-        $files = LaravelOperationManager::getUnprocessedFiles();
-        $this->assertCount(1, $files);
+    $files = LaravelOperationManager::getUnprocessedFiles();
+    expect($files)->toHaveCount(0);
+});
 
-        // create entry for file #2 -> file is processed
-        Operation::storeOperation('xxxx_xx_xx_xxxxxx_narf_puit', false);
+test('get unprocessed operation files', function () {
+    $files = LaravelOperationManager::getUnprocessedOperationFiles();
 
-        $files = LaravelOperationManager::getUnprocessedFiles();
-        $this->assertCount(0, $files);
-    }
+    expect($files)->toBeInstanceOf(Collection::class)
+        ->and($files)->toHaveCount(2);
 
-    /**
-     * @test
-     */
-    public function get_unprocessed_operation_files()
-    {
-        $files = LaravelOperationManager::getUnprocessedOperationFiles();
+    /** @var SplFileInfo $firstFile */
+    $firstFile = $files->first();
 
-        $this->assertInstanceOf(Collection::class, $files);
-        $this->assertCount(2, $files);
-
-        /** @var SplFileInfo $firstFile */
-        $firstFile = $files->first();
-
-        $this->assertInstanceOf(LaravelOperationFile::class, $firstFile);
-    }
-}
+    expect($firstFile)->toBeInstanceOf(LaravelOperationFile::class);
+});

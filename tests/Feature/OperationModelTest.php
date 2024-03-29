@@ -1,23 +1,16 @@
 <?php
 
-namespace EncoreDigitalGroup\LaravelOperations\Tests\Feature;
-
+//uses(\EncoreDigitalGroup\LaravelOperations\Tests\Feature\OneTimeOperationCase::class);
 use EncoreDigitalGroup\LaravelOperations\Models\Operation;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class OperationModelTest extends OneTimeOperationCase
-{
-    use RefreshDatabase;
+uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
 
-    /** @test */
-    public function it_stores_operation()
-    {
-        $operationModel = Operation::storeOperation('foobar_amazing', true);
+it('stores operation', function () {
+    $operationModel = Operation::storeOperation('foobar_amazing', true);
 
-        $this->assertInstanceOf(Operation::class, $operationModel);
-        $this->assertEquals('foobar_amazing', $operationModel->name);
-        $this->assertStringEndsWith('tests/files/foobar_amazing.php', $operationModel->file_path);
-        $this->assertEquals('async', $operationModel->dispatched);
-        $this->assertEquals('2015-10-21 07:28:00', $operationModel->processed_at);
-    }
-}
+    expect($operationModel)->toBeInstanceOf(Operation::class)
+        ->and($operationModel->name)->toEqual('foobar_amazing')
+        ->and($operationModel->file_path)->toEndWith('tests/files/foobar_amazing.php')
+        ->and($operationModel->dispatched)->toEqual('async')
+        ->and($operationModel->processed_at)->toEqual('2015-10-21 07:28:00');
+});

@@ -27,7 +27,7 @@ class LaravelOperationsServiceProvider extends ServiceProvider
     public function register()
     {
         $this->mergeConfigFrom(
-            __DIR__ . '/../../config/operations.php', 'one-time-operations'
+            __DIR__ . '/../../config/operations.php', 'operations'
         );
     }
 }
