@@ -40,36 +40,84 @@ Now you're all set!
 ## Commands
 
 ### Create operation files
+Create new operation file:
 ```shell
-php artisan operations:make <operation_name>                // create new operation file
-php artisan operations:make <operation_name> -e|--essential // create file without any attributes
+php artisan operations:make <operation_name>
+```
+Create file without any attributes:
+```shell
+php artisan operations:make <operation_name> -e|--essential
 ```
 
 ### Process operations
+
+Process all new operation files:
 ```shell
-php artisan operations:process                   // process all new operation files
+php artisan operations:process
+```
 
-php artisan operations:process --sync            // force synchronous execution
-php artisan operations:process --async           // force asynchronous execution
-php artisan operations:process --test            // dont flag operations as processed
-php artisan operations:process --isolated        // run command isolated
+Force synchronous execution:
+```shell
+php artisan operations:process --sync
+```
 
-php artisan operations:process --queue=<name>    // force queue, that the job will be dispatched to
-php artisan operations:process --tag=<tagname>   // only process operations, that have the given tag
+Force asynchronous execution:
+```shell
+php artisan operations:process --async
+```
 
-php artisan operations:process <operation_name>  // re-run one specific operation
+Test mode (don't flag operations as processed):
+```shell
+php artisan operations:process --test
+```
+
+Run command isolated:
+```shell
+php artisan operations:process --isolated
+```
+
+Force a specific queue for the job:
+```shell
+php artisan operations:process --queue=<name>
+```
+
+Only process operations with a specific tag:
+```shell
+php artisan operations:process --tag=<tagname>
+```
+
+Re-run one specific operation:
+```shell
+php artisan operations:process <operation_name>
 ```
 
 ### Show operations
-```shell
-php artisan operations:show            // show all operations 
-php artisan operations:show pending    // show pending operations 
-php artisan operations:show processed  // show processed operations 
-php artisan operations:show disposed   // show disposed operations 
 
-php artisan operations:show pending processed disposed  // use multiple filters 
+Show all operations:
+```shell
+php artisan operations:show
 ```
- 
+
+Show pending operations:
+```shell
+php artisan operations:show pending
+```
+
+Show processed operations:
+```shell
+php artisan operations:show processed
+```
+
+Show disposed operations:
+```shell
+php artisan operations:show disposed
+```
+
+Use multiple filters to show operations:
+```shell
+php artisan operations:show pending processed disposed
+```
+
 ## Tutorials
 
 ### CI/CD & Deployment-Process
