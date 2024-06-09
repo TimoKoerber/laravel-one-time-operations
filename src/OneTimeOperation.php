@@ -10,6 +10,11 @@ abstract class OneTimeOperation
     protected bool $async = true;
 
     /**
+     * The Queue connection which the job will run into asynchronously
+     */
+    protected string $connection = 'database';
+
+    /**
      * The queue that the job will be dispatched to.
      */
     protected string $queue = 'default';
@@ -27,6 +32,11 @@ abstract class OneTimeOperation
     public function isAsync(): bool
     {
         return $this->async;
+    }
+
+    public function getConnection():string
+    {
+        return $this->connection;
     }
 
     public function getQueue(): string

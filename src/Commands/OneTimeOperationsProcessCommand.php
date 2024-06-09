@@ -17,6 +17,7 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand implement
                             {--test : Process operation without tagging it as processed, so you can call it again}
                             {--async : Ignore setting in operation and process all operations asynchronously}
                             {--sync : Ignore setting in operation and process all operations synchronously}
+                            {--connection= : Set the connection, that all jobs will be dispatched to}
                             {--queue= : Set the queue, that all jobs will be dispatched to}
                             {--tag=* : Process only operations, that have one of the given tag}';
 
@@ -25,6 +26,8 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand implement
     protected bool $forceAsync = false;
 
     protected bool $forceSync = false;
+
+    protected ?string $connection = null;
 
     protected ?string $queue = null;
 
@@ -37,6 +40,7 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand implement
         $this->forceAsync = (bool) $this->option('async');
         $this->forceSync = (bool) $this->option('sync');
         $this->queue = $this->option('queue');
+        $this->connection = $this->option('connection');
         $this->tags = $this->option('tag');
 
         if (! $this->tagOptionsAreValid()) {
@@ -161,7 +165,9 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand implement
     protected function dispatchOperationJob(OneTimeOperationFile $operationFile)
     {
         if ($this->isAsyncMode($operationFile)) {
-            OneTimeOperationProcessJob::dispatch($operationFile->getOperationName())->onQueue($this->getQueue($operationFile));
+            OneTimeOperationProcessJob::dispatch($operationFile->getOperationName())
+                ->onConnection($this->getConnection($operationFile))
+                ->onQueue($this->getQueue($operationFile));
 
             return;
         }
@@ -201,6 +207,15 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand implement
         }
 
         return $operationFile->getClassObject()->getQueue() ?: null;
+    }
+
+    protected function getConnection(OneTimeOperationFile $operationFile): ?string
+    {
+        if ($this->connection) {
+            return $this->connection;
+        }
+
+        return $operationFile->getClassObject()->getConnection()?: null;
     }
 
     protected function filterOperationsByTags(Collection $unprocessedOperationFiles): Collection
