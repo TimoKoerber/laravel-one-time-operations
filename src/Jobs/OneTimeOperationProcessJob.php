@@ -8,6 +8,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use TimoKoerber\LaravelOneTimeOperations\OneTimeOperationManager;
+use TimoKoerber\LaravelOneTimeOperations\Models\Operation;
 
 class OneTimeOperationProcessJob implements ShouldQueue
 {
@@ -22,6 +23,16 @@ class OneTimeOperationProcessJob implements ShouldQueue
 
     public function handle(): void
     {
-        OneTimeOperationManager::getClassObjectByName($this->operationName)->process();
+        try {
+            OneTimeOperationManager::getClassObjectByName($this->operationName)->process();
+        } catch (\Throwable $th) {
+            $operation = Operation::where('name', $this->operationName)->first();
+
+            if($operation)
+            {
+                $operation->delete();
+            }
+        }
+        
     }
 }
