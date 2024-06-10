@@ -1,5 +1,5 @@
 {
-    "name": "timokoerber/laravel-one-time-operations",
+    "name": "trufla-technology/laravel-one-time-operations",
     "description": "Run operations once after deployment - just like you do it with migrations!",
     "keywords": [
         "laravel",
@@ -11,13 +11,13 @@
     "license": "MIT",
     "authors": [
         {
-            "name": "timo.koerber",
-            "email": "koerber.timo@gmail.com",
-            "homepage": "https://www.timokoerber.com",
-            "role": "Developer"
+            "name": "trufla-technology",
+            "email": "info@trufla.com",
+            "homepage": "https://www.trufla.com",
+            "role": "organization"
         }
     ],
-    "homepage": "https://github.com/timokoerber/laravel-one-time-operations",
+    "homepage": "https://github.com/trufla-technology/laravel-one-time-operations",
     "require": {
         "php": "^8.0",
         "illuminate/contracts": "^9.0|^10.0|^11.0",
