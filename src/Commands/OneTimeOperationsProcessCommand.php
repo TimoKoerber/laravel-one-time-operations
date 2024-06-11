@@ -165,12 +165,11 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand implement
     protected function dispatchOperationJob(OneTimeOperationFile $operationFile)
     {
         if ($this->isAsyncMode($operationFile)) {
-            $queue = $this->getQueue($operationFile);
-            $connection = $this->getConnection($operationFile);
-            error_log("[local.INFO]" . $operationFile->getOperationName() . " => [$connection]:[$queue]");
+
             OneTimeOperationProcessJob::dispatch($operationFile->getOperationName())
-                ->onConnection($connection)
-                ->onQueue($queue);
+                ->onConnection($this->getConnection($operationFile))
+                ->onQueue($this->getQueue($operationFile))
+                ->delay($this->getDelay($operationFile));
 
             return;
         }
@@ -210,6 +209,11 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand implement
         }
 
         return $operationFile->getClassObject()->getQueue() ?: null;
+    }
+
+    protected function getDelay(OneTimeOperationFile $operationFile): ?int
+    {
+        return $operationFile->getClassObject()->getDelay() ?: 0;
     }
 
     protected function getConnection(OneTimeOperationFile $operationFile): ?string
