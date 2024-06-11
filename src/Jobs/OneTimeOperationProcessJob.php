@@ -9,6 +9,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use TimoKoerber\LaravelOneTimeOperations\OneTimeOperationManager;
 use TimoKoerber\LaravelOneTimeOperations\Models\Operation;
+use Throwable;
 
 class OneTimeOperationProcessJob implements ShouldQueue
 {
@@ -24,17 +25,13 @@ class OneTimeOperationProcessJob implements ShouldQueue
     public function handle(): void
     {
         try {
-            error_log("[local.INFO]" . $this->operationName . ' ==> ' . json_encode(config('queue')));
-            error_log("[local.INFO]" . $this->operationName . ' ==> ' . $this->connection);
-            error_log("[local.INFO]" . $this->operationName . ' ==> ' . $this->queue);
             OneTimeOperationManager::getClassObjectByName($this->operationName)->process();
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             $operation = Operation::where('name', $this->operationName)->first();
 
             if ($operation) {
                 $operation->delete();
             }
         }
-
     }
 }

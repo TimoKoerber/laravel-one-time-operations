@@ -20,6 +20,11 @@ abstract class OneTimeOperation
     protected string $queue = 'default';
 
     /**
+     * The queue that the job will be delayed in seconds.
+     */
+    protected int $delay = 0;
+
+    /**
      * A tag name, that this operation can be filtered by.
      */
     protected ?string $tag = null;
@@ -34,9 +39,14 @@ abstract class OneTimeOperation
         return $this->async;
     }
 
-    public function getConnection():string
+    public function getConnection(): string
     {
         return $this->connection;
+    }
+
+    public function getDelay(): string
+    {
+        return $this->delay;
     }
 
     public function getQueue(): string
