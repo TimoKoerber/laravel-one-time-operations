@@ -43,13 +43,13 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand implement
         $this->connection = $this->option('connection');
         $this->tags = $this->option('tag');
 
-        if (! $this->tagOptionsAreValid()) {
+        if (!$this->tagOptionsAreValid()) {
             $this->components->error('Abort! Do not provide empty tags!');
 
             return self::FAILURE;
         }
 
-        if (! $this->syncOptionsAreValid()) {
+        if (!$this->syncOptionsAreValid()) {
             $this->components->error('Abort! Process either with --sync or --async.');
 
             return self::FAILURE;
@@ -96,7 +96,7 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand implement
 
     protected function processOperationModel(Operation $operationModel): int
     {
-        if (! $this->components->confirm('Operation was processed before. Process it again?')) {
+        if (!$this->components->confirm('Operation was processed before. Process it again?')) {
             $this->components->info('Operation aborted');
 
             return self::SUCCESS;
@@ -165,9 +165,12 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand implement
     protected function dispatchOperationJob(OneTimeOperationFile $operationFile)
     {
         if ($this->isAsyncMode($operationFile)) {
+            $queue = $this->getQueue($operationFile);
+            $connection = $this->getConnection($operationFile);
+            error_log("[local.INFO]" . $operationFile->getOperationName() . " => [$connection]:[$queue]");
             OneTimeOperationProcessJob::dispatch($operationFile->getOperationName())
-                ->onConnection($this->getConnection($operationFile))
-                ->onQueue($this->getQueue($operationFile));
+                ->onConnection($connection)
+                ->onQueue($queue);
 
             return;
         }
@@ -215,7 +218,7 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand implement
             return $this->connection;
         }
 
-        return $operationFile->getClassObject()->getConnection()?: null;
+        return $operationFile->getClassObject()->getConnection() ?: null;
     }
 
     protected function filterOperationsByTags(Collection $unprocessedOperationFiles): Collection
@@ -243,6 +246,6 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand implement
     protected function syncOptionsAreValid(): bool
     {
         // do not use both options at the same time
-        return ! ($this->forceAsync && $this->forceSync);
+        return !($this->forceAsync && $this->forceSync);
     }
 }

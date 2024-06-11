@@ -24,15 +24,17 @@ class OneTimeOperationProcessJob implements ShouldQueue
     public function handle(): void
     {
         try {
+            error_log("[local.INFO]" . $this->operationName . ' ==> ' . json_encode(config('queue')));
+            error_log("[local.INFO]" . $this->operationName . ' ==> ' . $this->connection);
+            error_log("[local.INFO]" . $this->operationName . ' ==> ' . $this->queue);
             OneTimeOperationManager::getClassObjectByName($this->operationName)->process();
         } catch (\Throwable $th) {
             $operation = Operation::where('name', $this->operationName)->first();
 
-            if($operation)
-            {
+            if ($operation) {
                 $operation->delete();
             }
         }
-        
+
     }
 }
