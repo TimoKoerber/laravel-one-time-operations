@@ -34,6 +34,11 @@ class Operation extends Model
         $this->table = OneTimeOperationManager::getTableName();
     }
 
+    public function getConnectionName()
+    {
+        return config('operations.connection', $this->connection);
+    }
+
     protected static function newFactory(): OperationFactory
     {
         return new OperationFactory();

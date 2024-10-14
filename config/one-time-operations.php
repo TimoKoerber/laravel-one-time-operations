@@ -7,4 +7,8 @@ return [
 
     // Table name - name of the table that stores your operation entries
     'table' => 'operations',
+
+    // Database Connection Name - Change the model connection, support for Multitenancy
+    //  Only change when you want to deviate from your system default repository
+    'connection' => null,
 ];
