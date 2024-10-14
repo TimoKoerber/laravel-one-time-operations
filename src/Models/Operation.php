@@ -36,7 +36,7 @@ class Operation extends Model
 
     public function getConnectionName()
     {
-        return config('operations.connection', $this->connection);
+        return config('one-time-operations.connection', $this->connection);
     }
 
     protected static function newFactory(): OperationFactory
