@@ -19,7 +19,7 @@ class OneTimeOperationCommandTest extends OneTimeOperationCase
         File::delete($filepath);
 
         // create operation file
-        $this->artisan('operations:make AwesomeOperation')
+        $this->artisan('make:operations AwesomeOperation')
             ->assertSuccessful()
             ->expectsOutputToContain('One-time operation [2015_10_21_072800_awesome_operation] created successfully.');
 
@@ -40,7 +40,7 @@ class OneTimeOperationCommandTest extends OneTimeOperationCase
         File::delete($filepath);
 
         // create operation file with essential flag
-        $this->artisan('operations:make AwesomeOperation --essential')->assertSuccessful();
+        $this->artisan('make:operations AwesomeOperation --essential')->assertSuccessful();
 
         $fileContent = File::get($filepath);
 
@@ -59,7 +59,7 @@ class OneTimeOperationCommandTest extends OneTimeOperationCase
         File::delete($filepath);
 
         // create operation file with shortcut for essential flag
-        $this->artisan('operations:make AwesomeOperation -e')->assertSuccessful();
+        $this->artisan('make:operations AwesomeOperation -e')->assertSuccessful();
 
         $fileContent = File::get($filepath);
 
@@ -84,7 +84,7 @@ class OneTimeOperationCommandTest extends OneTimeOperationCase
         Queue::assertNothingPushed();
 
         // create operation file
-        $this->artisan('operations:make AwesomeOperation')
+        $this->artisan('make:operations AwesomeOperation')
             ->assertSuccessful()
             ->expectsOutputToContain('One-time operation [2015_10_21_072800_awesome_operation] created successfully.');
 
@@ -156,7 +156,7 @@ class OneTimeOperationCommandTest extends OneTimeOperationCase
         Queue::assertNothingPushed();
 
         // create operation
-        $this->artisan('operations:make FooBarOperation')->assertSuccessful();
+        $this->artisan('make:operations FooBarOperation')->assertSuccessful();
 
         // Process - error is thrown because both flags are used
         $this->artisan('operations:process --sync --async')
@@ -183,7 +183,7 @@ class OneTimeOperationCommandTest extends OneTimeOperationCase
         Queue::assertNothingPushed();
 
         // create file
-        $this->artisan('operations:make FooBarOperation')->assertSuccessful();
+        $this->artisan('make:operations FooBarOperation')->assertSuccessful();
 
         // edit file so it will be executed synchronously
         $this->editFile('2015_10_21_072800_foo_bar_operation.php', '$async = true;', '$async = false;');
@@ -236,7 +236,7 @@ class OneTimeOperationCommandTest extends OneTimeOperationCase
         Queue::assertNothingPushed();
 
         // create file
-        $this->artisan('operations:make FooBarOperation')->assertSuccessful();
+        $this->artisan('make:operations FooBarOperation')->assertSuccessful();
 
         // edit file so it will use different queue
         $this->editFile('2015_10_21_072800_foo_bar_operation.php', '$queue = \'default\';', '$queue = \'narfpuit\';');
@@ -270,7 +270,7 @@ class OneTimeOperationCommandTest extends OneTimeOperationCase
         $this->assertEquals(0, Operation::count());
 
         // create file
-        $this->artisan('operations:make FooBarOperation')->assertSuccessful();
+        $this->artisan('make:operations FooBarOperation')->assertSuccessful();
 
         // process with test flag
         $this->artisan('operations:process --test')
@@ -287,9 +287,9 @@ class OneTimeOperationCommandTest extends OneTimeOperationCase
     public function test_processing_with_tags()
     {
         // create files
-        $this->artisan('operations:make FooBarOperation')->assertSuccessful();
-        $this->artisan('operations:make NarfPuitOperation')->assertSuccessful();
-        $this->artisan('operations:make NullTagOperation')->assertSuccessful();
+        $this->artisan('make:operations FooBarOperation')->assertSuccessful();
+        $this->artisan('make:operations NarfPuitOperation')->assertSuccessful();
+        $this->artisan('make:operations NullTagOperation')->assertSuccessful();
 
         // edit files so they will use tags
         $this->editFile('2015_10_21_072800_foo_bar_operation.php', '$tag = null;', '$tag = \'foobar\';');
@@ -366,7 +366,7 @@ class OneTimeOperationCommandTest extends OneTimeOperationCase
             ->expectsOutputToContain('No operations found.');
 
         // create operations
-        $this->artisan('operations:make FooBarOperation')->assertSuccessful();
+        $this->artisan('make:operations FooBarOperation')->assertSuccessful();
 
         // no files found
         $this->artisan('operations:show')
@@ -378,7 +378,7 @@ class OneTimeOperationCommandTest extends OneTimeOperationCase
             ->expectsOutputToContain('2015_10_21_072800_foo_bar_operation'); // PROCESSED
 
         // create operations
-        $this->artisan('operations:make AwesomeOperation')->assertSuccessful();
+        $this->artisan('make:operations AwesomeOperation')->assertSuccessful();
 
         // new pending operation added
         $this->artisan('operations:show')
@@ -388,7 +388,7 @@ class OneTimeOperationCommandTest extends OneTimeOperationCase
         $this->artisan('operations:process')->assertSuccessful();
 
         // create operations
-        $this->artisan('operations:make SuperiorOperation')->assertSuccessful();
+        $this->artisan('make:operations SuperiorOperation')->assertSuccessful();
 
         // seconds operation was processed, third operation was added
         $this->artisan('operations:show')
