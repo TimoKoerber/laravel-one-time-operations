@@ -7,7 +7,7 @@ use TimoKoerber\LaravelOneTimeOperations\OneTimeOperationCreator;
 
 class OneTimeOperationsMakeCommand extends OneTimeOperationsCommand
 {
-    protected $signature = 'operations:make
+    protected $signature = 'make:operations
                             {name : The name of the one-time operation}
                             {--e|essential : Create file without any attributes}';
 
