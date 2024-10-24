@@ -42,11 +42,11 @@ Now you're all set!
 ### Create operation files
 Create new operation file:
 ```shell
-php artisan operations:make <operation_name>
+php artisan make:operations <operation_name>
 ```
 Create file without any attributes:
 ```shell
-php artisan operations:make <operation_name> -e|--essential
+php artisan make:operations <operation_name> -e|--essential
 ```
 
 ### Process operations
@@ -168,7 +168,7 @@ Make changes as you like.
 To create a new operation file execute the following command:
 
 ```shell
-php artisan operations:make AwesomeOperation
+php artisan make:operations AwesomeOperation
 ```
 
 This will create a file like `operations/XXXX_XX_XX_XXXXXX_awesome_operation.php` with the following content.
@@ -231,8 +231,8 @@ _(this is only recommended for small operations, since the processing of these o
 If you don't need all the available attributes for your operation, you can create a *cleaner* operation file with the `--essential` or `-e` option: 
 
 ```shell
-php artisan operations:make AwesomeOperation --essential
-php artisan operations:make AwesomeOperation -e
+php artisan make:operations AwesomeOperation --essential
+php artisan make:operations AwesomeOperation -e
 ```
 
 ### Custom operation file
