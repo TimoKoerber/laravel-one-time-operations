@@ -283,6 +283,32 @@ class OneTimeOperationCommandTest extends OneTimeOperationCase
         // still no database entry because of test mode
         $this->assertEquals(0, Operation::count());
     }
+    public function test_processing_sync_async_only()
+    {
+        // create files
+        $this->artisan('operations:make AsyncOperation')->assertSuccessful();
+        $this->artisan('operations:make SyncOperation')->assertSuccessful();
+
+        // edit files to make it sync
+        $this->editFile('2015_10_21_072800_sync_operation.php', '$async = true;', '$async = false;');
+
+        // AsyncOperation will be processed because it is async
+        $this->artisan('operations:process --only-async')
+            ->expectsOutputToContain('2015_10_21_072800_async_operation')
+            ->doesntExpectOutputToContain('No operations to process.')
+            ->doesntExpectOutputToContain('2015_10_21_072800_sync_operation')
+            ->assertSuccessful();
+
+
+        $this->artisan('operations:make Async2Operation')->assertSuccessful();
+
+        // SyncOperation only will be processed because it is sync
+        $this->artisan('operations:process --only-sync')
+            ->expectsOutputToContain('2015_10_21_072800_sync_operation')
+            ->doesntExpectOutputToContain('No operations to process.')
+            ->doesntExpectOutputToContain('2015_10_21_072800_async2_operation')
+            ->assertSuccessful();
+    }
 
     public function test_processing_with_tags()
     {

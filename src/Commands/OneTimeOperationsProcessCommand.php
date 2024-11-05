@@ -17,6 +17,8 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand implement
                             {--test : Process operation without tagging it as processed, so you can call it again}
                             {--async : Ignore setting in operation and process all operations asynchronously}
                             {--sync : Ignore setting in operation and process all operations synchronously}
+                            {--only-sync : Process only operations, that are set to be processed synchronously}
+                            {--only-async : Process only operations, that are set to be processed asynchronously}
                             {--queue= : Set the queue, that all jobs will be dispatched to}
                             {--tag=* : Process only operations, that have one of the given tag}';
 
@@ -30,6 +32,10 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand implement
 
     protected array $tags = [];
 
+    protected bool $onlySync = false;
+
+    protected bool $onlyAsync = false;
+
     public function handle(): int
     {
         $this->displayTestmodeWarning();
@@ -38,6 +44,8 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand implement
         $this->forceSync = (bool) $this->option('sync');
         $this->queue = $this->option('queue');
         $this->tags = $this->option('tag');
+        $this->onlySync = (bool) $this->option('only-sync');
+        $this->onlyAsync = (bool) $this->option('only-async');
 
         if (! $this->tagOptionsAreValid()) {
             $this->components->error('Abort! Do not provide empty tags!');
@@ -115,11 +123,18 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand implement
 
     protected function processNextOperations(): int
     {
-        $processingOutput = 'Processing operations.';
+        $processingOutput = 'Processing';
         $unprocessedOperationFiles = OneTimeOperationManager::getUnprocessedOperationFiles();
 
+        if ($this->onlySync || $this->onlyAsync) {
+            $processingOutput .= $this->onlySync ? ' SYNC ONLY' : ' ASYNC ONLY';
+            $unprocessedOperationFiles = $this->filterOperationsByExecutionType($unprocessedOperationFiles);
+        }
+
+        $processingOutput .= ' operations';
+
         if ($this->tags) {
-            $processingOutput = sprintf('Processing operations with tags (%s)', Arr::join($this->tags, ','));
+            $processingOutput .= sprintf(' with tags (%s)', Arr::join($this->tags, ','));
             $unprocessedOperationFiles = $this->filterOperationsByTags($unprocessedOperationFiles);
         }
 
@@ -207,6 +222,14 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand implement
     {
         return $unprocessedOperationFiles->filter(function (OneTimeOperationFile $operationFile) {
             return $this->tagMatched($operationFile);
+        })->collect();
+    }
+
+    protected function filterOperationsByExecutionType(Collection $unprocessedOperationFiles): Collection
+    {
+        $type = $this->onlyAsync;
+        return $unprocessedOperationFiles->filter(function (OneTimeOperationFile $operationFile) use ($type) {
+            return $operationFile->getClassObject()->isAsync() == $type;
         })->collect();
     }
 
