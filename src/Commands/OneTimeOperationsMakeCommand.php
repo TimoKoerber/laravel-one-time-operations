@@ -13,6 +13,13 @@ class OneTimeOperationsMakeCommand extends OneTimeOperationsCommand
 
     protected $description = 'Create a new one-time operation';
 
+    protected function configure(): void
+    {
+        $this->setAliases(['make:operation']);
+
+        parent::configure();
+    }
+
     public function handle(): int
     {
         try {

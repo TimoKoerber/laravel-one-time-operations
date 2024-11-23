@@ -34,6 +34,17 @@ class OneTimeOperationCommandTest extends OneTimeOperationCase
         $this->assertStringContainsString('public function process(): void', $fileContent);
     }
 
+    public function test_make_command_alias()
+    {
+        $filepath = $this->filepath('2015_10_21_072800_awesome_operation.php');
+        File::delete($filepath);
+
+        // create operation file
+        $this->artisan('make:operation AwesomeOperation')
+            ->assertSuccessful()
+            ->expectsOutputToContain('One-time operation [2015_10_21_072800_awesome_operation] created successfully.');
+    }
+
     public function test_make_command_without_attributes()
     {
         $filepath = $this->filepath('2015_10_21_072800_awesome_operation.php');
