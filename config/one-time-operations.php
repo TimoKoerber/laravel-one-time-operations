@@ -9,6 +9,6 @@ return [
     'table' => 'operations',
 
     // Database Connection Name - Change the model connection, support for Multitenancy
-    //  Only change when you want to deviate from your system default repository
+    // Only change when you want to deviate from your system default repository
     'connection' => null,
 ];
