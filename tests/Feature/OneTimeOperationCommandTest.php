@@ -21,7 +21,7 @@ class OneTimeOperationCommandTest extends OneTimeOperationCase
         // create operation file
         $this->artisan('operations:make AwesomeOperation')
             ->assertSuccessful()
-            ->expectsOutputToContain('One-time operation [2015_10_21_072800_awesome_operation] created successfully.');
+            ->expectsOutputToContain(sprintf('One-time operation [%s] created successfully.', $this->fileRealPath($filepath)));
 
         // file was created, but no operation entry yet
         $this->assertFileExists($filepath);
@@ -97,7 +97,7 @@ class OneTimeOperationCommandTest extends OneTimeOperationCase
         // create operation file
         $this->artisan('operations:make AwesomeOperation')
             ->assertSuccessful()
-            ->expectsOutputToContain('One-time operation [2015_10_21_072800_awesome_operation] created successfully.');
+            ->expectsOutputToContain(sprintf('One-time operation [%s] created successfully.', $this->fileRealPath($filepath)));
 
         // file was created, but no operation entry yet
         $this->assertFileExists($filepath);
@@ -442,6 +442,11 @@ class OneTimeOperationCommandTest extends OneTimeOperationCase
     protected function filepath(string $filename): string
     {
         return base_path(config('one-time-operations.directory')).DIRECTORY_SEPARATOR.$filename;
+    }
+
+    protected function fileRealPath(string $filepath): string
+    {
+        return realpath('.').DIRECTORY_SEPARATOR.Str::afterLast($filepath, '../');
     }
 
     protected function tearDown(): void

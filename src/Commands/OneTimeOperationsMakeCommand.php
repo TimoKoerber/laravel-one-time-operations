@@ -24,7 +24,7 @@ class OneTimeOperationsMakeCommand extends OneTimeOperationsCommand
     {
         try {
             $file = OneTimeOperationCreator::createOperationFile($this->argument('name'), $this->option('essential'));
-            $this->components->info(sprintf('One-time operation [%s] created successfully.', $file->getOperationName()));
+            $this->components->info(sprintf('One-time operation [%s] created successfully.', $file->getOperationFilePath()));
 
             return self::SUCCESS;
         } catch (Throwable $e) {
