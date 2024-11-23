@@ -49,6 +49,11 @@ Create file without any attributes:
 php artisan operations:make <operation_name> -e|--essential
 ```
 
+Use command alias to create operation file:
+```shell
+php artisan make:operation <operation_name>
+```
+
 ### Process operations
 
 Process all new operation files:
