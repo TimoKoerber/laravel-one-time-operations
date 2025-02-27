@@ -20,12 +20,12 @@
     "homepage": "https://github.com/timokoerber/laravel-one-time-operations",
     "require": {
         "php": "^8.0",
-        "illuminate/contracts": "^9.0|^10.0|^11.0",
-        "illuminate/support": "^9.0|^10.0|^11.0"
+        "illuminate/contracts": "^9.0|^10.0|^11.0|^12.0",
+        "illuminate/support": "^9.0|^10.0|^11.0|^12.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^9.4|^10.5",
-        "orchestra/testbench": "7|^9.0"
+        "phpunit/phpunit": "^9.4|^10.5|^11.5.3",
+        "orchestra/testbench": "7|^9.0|^10.0"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
