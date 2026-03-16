@@ -2,8 +2,8 @@
 
 namespace TimoKoerber\LaravelOneTimeOperations\Commands\Utils;
 
+use Carbon\CarbonInterface;
 use Illuminate\Console\View\Components\Factory;
-use Illuminate\Support\Carbon;
 use TimoKoerber\LaravelOneTimeOperations\Commands\OneTimeOperationsCommand;
 
 class OperationsLineElement
@@ -13,12 +13,12 @@ class OperationsLineElement
     public function __construct(
         public string $name,
         public string $status,
-        public ?Carbon $processedAt = null,
+        public ?CarbonInterface $processedAt = null,
         public ?string $tag = null,
     ) {
     }
 
-    public static function make(string $name, string $status, Carbon $processedAt = null, string $tag = null): self
+    public static function make(string $name, string $status, CarbonInterface $processedAt = null, string $tag = null): self
     {
         return new self($name, $status, $processedAt, $tag);
     }
