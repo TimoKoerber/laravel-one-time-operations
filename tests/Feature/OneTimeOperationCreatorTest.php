@@ -22,6 +22,7 @@ class OneTimeOperationCreatorTest extends OneTimeOperationCase
         $this->assertInstanceOf(OneTimeOperationFile::class, $operationFile);
         $this->assertInstanceOf(OneTimeOperation::class, $operationFile->getClassObject());
         $this->assertEquals('2015_10_21_072800_test_operation', $operationFile->getOperationName());
+        $this->assertStringContainsString('tests/files/2015_10_21_072800_test_operation.php', $operationFile->getOperationFilePath());
 
         File::delete($filepath);
     }
