@@ -3,6 +3,7 @@
 namespace TimoKoerber\LaravelOneTimeOperations\Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Str;
@@ -113,7 +114,7 @@ class OneTimeOperationCommandTest extends OneTimeOperationCase
         // operation was exectued - database entry and job was created
         $this->assertEquals(1, Operation::count());
         Queue::assertPushed(OneTimeOperationProcessJob::class, function (OneTimeOperationProcessJob $job) {
-            return $job->connection === null; // async
+            return $job->connection === Config::get('one-time-operations.queue_connection'); // async
         });
 
         // entry was created successfully
@@ -221,7 +222,7 @@ class OneTimeOperationCommandTest extends OneTimeOperationCase
         // Job was executed asynchronously
         Queue::assertPushed(OneTimeOperationProcessJob::class, function (OneTimeOperationProcessJob $job) {
             return $job->operationName === '2015_10_21_072800_foo_bar_operation'
-                && $job->connection === null // async
+                && $job->connection === Config::get('one-time-operations.queue_connection') // async
                 && $job->queue === 'default'; // default queue
         });
 
@@ -237,7 +238,7 @@ class OneTimeOperationCommandTest extends OneTimeOperationCase
         // Job was executed asynchronously on queue "foobar"
         Queue::assertPushed(OneTimeOperationProcessJob::class, function (OneTimeOperationProcessJob $job) {
             return $job->operationName === '2015_10_21_072800_foo_bar_operation'
-                && $job->connection === null // async
+                && $job->connection === Config::get('one-time-operations.queue_connection') // async
                 && $job->queue === 'foobar'; // default queue
         });
     }
@@ -258,7 +259,7 @@ class OneTimeOperationCommandTest extends OneTimeOperationCase
         // Job was executed synchronously
         Queue::assertPushed(OneTimeOperationProcessJob::class, function (OneTimeOperationProcessJob $job) {
             return $job->operationName === '2015_10_21_072800_foo_bar_operation'
-                && $job->connection === null // async
+                && $job->connection === Config::get('one-time-operations.queue_connection') // async
                 && $job->queue === 'narfpuit'; // queue narfpuit
         });
 
@@ -270,7 +271,7 @@ class OneTimeOperationCommandTest extends OneTimeOperationCase
         // Job was executed asynchronously on queue "foobar"
         Queue::assertPushed(OneTimeOperationProcessJob::class, function (OneTimeOperationProcessJob $job) {
             return $job->operationName === '2015_10_21_072800_foo_bar_operation'
-                && $job->connection === null // async
+                && $job->connection === Config::get('one-time-operations.queue_connection') // async
                 && $job->queue === 'foobar'; // queue foobar
         });
     }

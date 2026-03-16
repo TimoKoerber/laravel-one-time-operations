@@ -11,4 +11,8 @@ return [
     // Database Connection Name - Change the model connection, support for Multitenancy
     // Only change when you want to deviate from your system default repository
     'connection' => null,
+
+    // Queue Connection Name
+    // Only change when you want to use a specific queue connection different from default
+    'queue_connection' => env('ONE_TIME_OPERATIONS_QUEUE_CONNECTION', env('QUEUE_CONNECTION', 'sync')),
 ];

@@ -3,6 +3,7 @@
 namespace TimoKoerber\LaravelOneTimeOperations\Tests\Feature;
 
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Queue;
 use Orchestra\Testbench\TestCase;
@@ -24,6 +25,9 @@ abstract class OneTimeOperationCase extends TestCase
 
         Queue::fake();
         Carbon::setTestNow(self::TEST_DATETIME);
+
+        Config::set('queue.default', 'default');
+
     }
 
     protected function getPackageProviders($app): array

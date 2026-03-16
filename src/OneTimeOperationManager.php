@@ -108,6 +108,11 @@ class OneTimeOperationManager
         return Config::get('one-time-operations.directory');
     }
 
+    public static function getConnectionName(): string
+    {
+        return Config::get('one-time-operations.queue_connection');
+    }
+
     public static function getDirectoryPath(): string
     {
         return App::basePath(Str::of(self::getDirectoryName())->rtrim('/')).DIRECTORY_SEPARATOR;

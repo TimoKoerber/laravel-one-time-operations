@@ -161,7 +161,9 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand implement
     protected function dispatchOperationJob(OneTimeOperationFile $operationFile)
     {
         if ($this->isAsyncMode($operationFile)) {
-            OneTimeOperationProcessJob::dispatch($operationFile->getOperationName())->onQueue($this->getQueue($operationFile));
+            OneTimeOperationProcessJob::dispatch($operationFile->getOperationName())
+                                      ->onQueue($this->getQueue($operationFile))
+                                      ->onConnection(OneTimeOperationManager::getConnectionName());
 
             return;
         }
