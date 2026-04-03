@@ -37,6 +37,28 @@ php artisan migrate
 
 Now you're all set!
 
+## Laravel Boost Support
+
+This package includes Laravel Boost AI guidelines and skills.
+
+After installing `laravel/boost` in a Laravel application, run:
+
+```shell
+php artisan boost:install
+```
+To refresh existing Boost resources later:
+
+```shell
+php artisan boost:update
+```
+
+To discover newly installed package Boost resources:
+```shell
+php artisan boost:update --discover
+```
+
+Use `boost:update --discover` after installing new packages so Boost can prompt for newly available third-party guidelines and skills.
+
 ## Commands
 
 ### Create operation files
@@ -381,4 +403,3 @@ composer test
 Copyright © Timo Körber | [www.timokoerber.com](https://www.timokoerber.com)
 
 "One-Time Operations for Laravel" is open-sourced software licensed under the [MIT license](LICENSE).
-
