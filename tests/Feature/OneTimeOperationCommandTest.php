@@ -439,6 +439,35 @@ class OneTimeOperationCommandTest extends OneTimeOperationCase
             ->expectsOutputToContain('Given filter is not valid. Allowed filters: pending|processed|disposed.');
     }
 
+    public function test_process_command_with_name_ending_in_php_characters()
+    {
+        // "cleanup" ends in "p", "refresh" in "h" — trimming ".php" as a character
+        // list eats those, so the file could never be found
+        $this->artisan('operations:make AwesomeCleanup')->assertSuccessful();
+
+        $this->artisan('operations:process 2015_10_21_072800_awesome_cleanup')
+            ->assertSuccessful()
+            ->expectsOutputToContain('2015_10_21_072800_awesome_cleanup')
+            ->expectsOutputToContain('Processing finished.');
+
+        Queue::assertPushed(OneTimeOperationProcessJob::class, function (OneTimeOperationProcessJob $job) {
+            return $job->operationName === '2015_10_21_072800_awesome_cleanup';
+        });
+    }
+
+    public function test_process_command_still_accepts_a_filename()
+    {
+        $this->artisan('operations:make AwesomeRefresh')->assertSuccessful();
+
+        $this->artisan('operations:process 2015_10_21_072800_awesome_refresh.php')
+            ->assertSuccessful()
+            ->expectsOutputToContain('Processing finished.');
+
+        Queue::assertPushed(OneTimeOperationProcessJob::class, function (OneTimeOperationProcessJob $job) {
+            return $job->operationName === '2015_10_21_072800_awesome_refresh';
+        });
+    }
+
     protected function filepath(string $filename): string
     {
         return base_path(config('one-time-operations.directory')).DIRECTORY_SEPARATOR.$filename;

@@ -60,7 +60,9 @@ class OneTimeOperationsProcessCommand extends OneTimeOperationsCommand implement
 
     protected function proccessSingleOperation(string $providedOperationName): int
     {
-        $providedOperationName = str($providedOperationName)->rtrim('.php')->toString();
+        // rtrim() takes a character list, so it would also eat a trailing "h" or "p"
+        // from the name itself (e.g. ..._cleanup, ..._refresh)
+        $providedOperationName = str($providedOperationName)->basename('.php')->toString();
 
         try {
             if ($operationModel = OneTimeOperationManager::getModelByName($providedOperationName)) {
